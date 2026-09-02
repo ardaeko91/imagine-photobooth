@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pilih Style AI - Imagine Photobooth AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
+
+    @keyframes auroraRotate {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.3); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    .aurora-bg {
+      position: absolute;
+      width: 180%;
+      height: 180%;
+      top: -40%;
+      left: -40%;
+      background: conic-gradient(
+        from 0deg at 50% 50%,
+        #6366f1 0deg,
+        #a855f7 100deg,
+        #ec4899 200deg,
+        #3b82f6 280deg,
+        #6366f1 360deg
+      );
+      filter: blur(60px);
+      animation: auroraRotate 16s linear infinite;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* CSS Mask Gradient untuk Efek Fade Out di Pinggir Kiri & Kanan Carousel */
+    .carousel-mask {
+      -webkit-mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 8%,
+        black 92%,
+        transparent 100%
+      );
+      mask-image: linear-gradient(
+        to right,
+        transparent 0%,
+        black 8%,
+        black 92%,
+        transparent 100%
+      );
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8 select-none">
+
+  <div class="w-full max-w-sm md:max-w-5xl h-[844px] md:h-[680px] bg-slate-950/60 text-white flex flex-col justify-between items-center p-6 md:p-8 relative overflow-hidden rounded-[40px] border border-white/20 shadow-2xl backdrop-blur-3xl transition-all duration-500">
+    
+    <!-- Background Aurora -->
+    <div class="aurora-bg"></div>
+
+    <!-- Header -->
+    <header class="w-full flex justify-between items-center z-10 pt-2">
+      <a href="index.html" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-slate-300 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+      </a>
+      <span class="text-xs font-mono text-indigo-300 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30">
+        STEP 2: PILIH STYLE
+      </span>
+    </header>
+
+    <!-- Main Carousel Section -->
+    <main class="w-full my-auto flex flex-col items-center space-y-4 z-10">
+      <div class="text-center space-y-1">
+        <h2 class="text-xl md:text-2xl font-bold bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
+          Pilih Theme AI
+        </h2>
+        <p class="text-xs text-slate-300">Geser atau gunakan panah untuk memilih gaya foto</p>
+      </div>
+
+      <!-- Carousel Container Wrapper -->
+      <div class="relative w-full max-w-xs md:max-w-4xl flex items-center justify-center px-2 md:px-6">
+        
+        <!-- Navigation Button Left -->
+        <button onclick="smoothScrollTo(-350)" class="hidden md:flex absolute -left-2 z-30 p-3 rounded-full bg-slate-900/90 hover:bg-indigo-600 border border-white/20 text-white backdrop-blur-md shadow-2xl transition hover:scale-110 active:scale-95">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+
+        <!-- Carousel Track dengan Mask Gradient Smooth Fade -->
+        <div id="carouselTrack" class="carousel-mask flex gap-5 overflow-x-auto no-scrollbar w-full py-4 px-8 cursor-grab active:cursor-grabbing">
+          
+          <!-- 01: Cyberpunk -->
+          <div onclick="selectTheme(this, 'Cyberpunk 2077')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" alt="Cyberpunk" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-indigo-300 uppercase tracking-widest">STYLE 01</span>
+              <h3 class="text-sm font-bold text-white">Cyberpunk 2077</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+          <!-- 02: Anime World -->
+          <div onclick="selectTheme(this, 'Anime World')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop" alt="Anime" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-pink-300 uppercase tracking-widest">STYLE 02</span>
+              <h3 class="text-sm font-bold text-white">Anime World</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+          <!-- 03: Retro 90s -->
+          <div onclick="selectTheme(this, 'Retro 90s')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop" alt="Retro 90s" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-amber-300 uppercase tracking-widest">STYLE 03</span>
+              <h3 class="text-sm font-bold text-white">Retro 90s Film</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+          <!-- 04: 3D Avatar -->
+          <div onclick="selectTheme(this, '3D Render')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop" alt="3D Render" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-cyan-300 uppercase tracking-widest">STYLE 04</span>
+              <h3 class="text-sm font-bold text-white">3D Avatar</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+          <!-- 05: Ghibli Studio -->
+          <div onclick="selectTheme(this, 'Ghibli Studio')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop" alt="Ghibli Studio" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-emerald-300 uppercase tracking-widest">STYLE 05</span>
+              <h3 class="text-sm font-bold text-white">Ghibli Studio</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+          <!-- 06: Cyber Samurai -->
+          <div onclick="selectTheme(this, 'Cyber Samurai')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop" alt="Cyber Samurai" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-red-300 uppercase tracking-widest">STYLE 06</span>
+              <h3 class="text-sm font-bold text-white">Cyber Samurai</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+          <!-- 07: Futuristic Mecha -->
+          <div onclick="selectTheme(this, 'Futuristic Mecha')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?w=600&auto=format&fit=crop" alt="Futuristic Mecha" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-blue-300 uppercase tracking-widest">STYLE 07</span>
+              <h3 class="text-sm font-bold text-white">Mecha Suit</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+          <!-- 08: Fantasy Elf -->
+          <div onclick="selectTheme(this, 'Fantasy Elf')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&auto=format&fit=crop" alt="Fantasy Elf" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-purple-300 uppercase tracking-widest">STYLE 08</span>
+              <h3 class="text-sm font-bold text-white">Fantasy Elf</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+          <!-- 09: Pixel Art 8-Bit -->
+          <div onclick="selectTheme(this, 'Pixel Art')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop" alt="Pixel Art" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-green-300 uppercase tracking-widest">STYLE 09</span>
+              <h3 class="text-sm font-bold text-white">Pixel Art 8-Bit</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+          <!-- 10: Neon Noir -->
+          <div onclick="selectTheme(this, 'Neon Noir')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">
+            <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=600&auto=format&fit=crop" alt="Neon Noir" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">
+              <span class="text-[10px] font-mono text-fuchsia-300 uppercase tracking-widest">STYLE 10</span>
+              <h3 class="text-sm font-bold text-white">Neon Noir</h3>
+            </div>
+            <div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>
+          </div>
+
+        </div>
+
+        <!-- Navigation Button Right -->
+        <button onclick="smoothScrollTo(350)" class="hidden md:flex absolute -right-2 z-30 p-3 rounded-full bg-slate-900/90 hover:bg-indigo-600 border border-white/20 text-white backdrop-blur-md shadow-2xl transition hover:scale-110 active:scale-95">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+        </button>
+
+      </div>
+
+      <!-- Action Button -->
+      <button id="generateBtn" disabled onclick="alert('Memulai proses AI Generation...')" class="w-full md:w-80 py-4 rounded-2xl bg-indigo-600 disabled:opacity-40 hover:bg-indigo-500 font-bold text-sm tracking-wide transition shadow-lg shadow-indigo-500/40">
+        GENERATE FOTO AI ✨
+      </button>
+
+    </main>
+
+    <!-- Footer Watermark -->
+    <footer class="w-full py-3 text-center z-10 border-t border-white/10">
+      <p class="text-[11px] text-slate-300">
+        Imagine Photobooth Ai v1.0 | Develope by <a href="https://www.instagram.com/ardaeko/" target="_blank" class="text-white font-semibold">@ardaeko</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    const slider = document.getElementById('carouselTrack');
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    function smoothScrollTo(distance) {
+      const start = slider.scrollLeft;
+      const duration = 400;
+      let startTime = null;
+
+      function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        
+        slider.scrollLeft = start + (distance * ease);
+
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      }
+
+      requestAnimationFrame(animation);
+    }
+
+    slider.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    });
+
+    slider.addEventListener('mouseleave', () => { isDown = false; });
+    slider.addEventListener('mouseup', () => { isDown = false; });
+
+    slider.addEventListener('mousemove', (e) => {
+      if(!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      slider.scrollLeft = scrollLeft - walk;
+    });
+
+    function selectTheme(cardElement, themeName) {
+      document.querySelectorAll('.theme-card').forEach(card => {
+        card.classList.remove('border-indigo-400', 'ring-4', 'ring-indigo-500/40', 'scale-105');
+        card.classList.add('border-white/15');
+        card.querySelector('.check-icon').classList.add('hidden');
+      });
+
+      cardElement.classList.remove('border-white/15');
+      cardElement.classList.add('border-indigo-400', 'ring-4', 'ring-indigo-500/40', 'scale-105');
+      cardElement.querySelector('.check-icon').classList.remove('hidden');
+
+      document.getElementById('generateBtn').disabled = false;
+    }
+  </script>
+</body>
+</html>

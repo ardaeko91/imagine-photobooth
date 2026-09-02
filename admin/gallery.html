@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery - Admin Imagine Photobooth</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
+    @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
+    .aurora-admin {
+      position: absolute; width: 180%; height: 180%; top: -40%; left: -40%;
+      background: conic-gradient(from 0deg at 50% 50%, #1e293b 0deg, #334155 90deg, #475569 180deg, #0f172a 270deg, #1e293b 360deg);
+      filter: blur(80px); animation: auroraRotate 20s linear infinite; border-radius: 50%; pointer-events: none; opacity: 0.8;
+    }
+  </style>
+</head>
+<body class="h-screen text-slate-100 flex overflow-hidden relative">
+  <div class="aurora-admin"></div>
+
+  <aside class="w-64 h-screen sticky top-0 border-r border-white/10 bg-slate-950/90 backdrop-blur-2xl p-6 flex flex-col justify-between shrink-0 z-30">
+    <div class="space-y-8">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center font-bold text-indigo-400">
+          <i data-lucide="sparkles" class="w-5 h-5 text-indigo-400"></i>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-white">Photobooth AI</h1>
+          <p class="text-[10px] text-slate-400 font-mono">ADMIN PANEL v1.0</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1.5 text-xs font-semibold">
+        <a href="index.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+        </a>
+        <a href="presets.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="palette" class="w-4 h-4"></i> Preset & Prompts
+        </a>
+        <a href="branding.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="image" class="w-4 h-4"></i> Branding & Overlay
+        </a>
+        <a href="gallery.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+          <i data-lucide="folder-open" class="w-4 h-4"></i> Gallery & Storage
+        </a>
+        <a href="hardware.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="camera" class="w-4 h-4"></i> Camera & Hardware
+        </a>
+        <a href="analytics.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Analytics & Tokens
+        </a>
+      </nav>
+    </div>
+
+    <div class="pt-6 border-t border-white/10">
+      <a href="../user/index.html" target="_blank" class="w-full py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center justify-center gap-2 border border-white/15 transition">
+        <i data-lucide="external-link" class="w-4 h-4"></i> Buka User Kiosk
+      </a>
+    </div>
+  </aside>
+
+  <div class="flex-1 flex flex-col h-screen overflow-y-auto z-10">
+    <header class="p-6 border-b border-white/10 flex justify-between items-center bg-slate-950/60 backdrop-blur-md sticky top-0 z-20">
+      <div>
+        <h2 class="text-xl font-bold text-white">Gallery & Storage Management</h2>
+        <p class="text-xs text-slate-400">Riwayat foto pengunjung event dan manajemen aksi instan</p>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="alert('Mengunduh Seluruh Foto Event (ZIP)...')" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-emerald-600/30">
+          <i data-lucide="download" class="w-4 h-4"></i> Download All (ZIP)
+        </button>
+      </div>
+    </header>
+
+    <main class="p-8 space-y-6">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
+        
+        <div class="aspect-[9/16] rounded-2xl bg-slate-900 border border-white/15 overflow-hidden relative group shadow-xl">
+          <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
+          
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-3 flex flex-col justify-between">
+            
+            <div class="flex justify-between items-center">
+              <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-600/80 text-white border border-indigo-400/30">
+                #Session-128
+              </span>
+            </div>
+
+            <div class="space-y-2">
+              <p class="text-[10px] font-bold text-white truncate">Cyberpunk 2077</p>
+              
+              <div class="flex items-center justify-between bg-black/60 backdrop-blur-md p-1.5 rounded-xl border border-white/15">
+                <button onclick="alert('Pratinjau Foto #Session-128')" class="p-1.5 rounded-lg hover:bg-white/20 text-slate-200 hover:text-white transition" title="Lihat Foto">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+                <button onclick="alert('Mengunduh Foto #Session-128')" class="p-1.5 rounded-lg hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 transition" title="Download">
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                </button>
+                <button onclick="alert('Menampilkan QR Code Foto #Session-128')" class="p-1.5 rounded-lg hover:bg-indigo-500/30 text-indigo-300 hover:text-indigo-200 transition" title="Tampilkan QR Code">
+                  <i data-lucide="qr-code" class="w-4 h-4"></i>
+                </button>
+                <button onclick="confirm('Hapus foto ini?')" class="p-1.5 rounded-lg hover:bg-rose-500/30 text-rose-400 hover:text-rose-200 transition" title="Hapus Foto">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="aspect-[9/16] rounded-2xl bg-slate-900 border border-white/15 overflow-hidden relative group shadow-xl">
+          <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
+          
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-3 flex flex-col justify-between">
+            <div class="flex justify-between items-center">
+              <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-pink-600/80 text-white border border-pink-400/30">
+                #Session-127
+              </span>
+            </div>
+
+            <div class="space-y-2">
+              <p class="text-[10px] font-bold text-white truncate">Anime World</p>
+              <div class="flex items-center justify-between bg-black/60 backdrop-blur-md p-1.5 rounded-xl border border-white/15">
+                <button onclick="alert('Pratinjau Foto #Session-127')" class="p-1.5 rounded-lg hover:bg-white/20 text-slate-200 hover:text-white transition" title="Lihat Foto">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+                <button onclick="alert('Mengunduh Foto #Session-127')" class="p-1.5 rounded-lg hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 transition" title="Download">
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                </button>
+                <button onclick="alert('Menampilkan QR Code Foto #Session-127')" class="p-1.5 rounded-lg hover:bg-indigo-500/30 text-indigo-300 hover:text-indigo-200 transition" title="Tampilkan QR Code">
+                  <i data-lucide="qr-code" class="w-4 h-4"></i>
+                </button>
+                <button onclick="confirm('Hapus foto ini?')" class="p-1.5 rounded-lg hover:bg-rose-500/30 text-rose-400 hover:text-rose-200 transition" title="Hapus Foto">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aspect-[9/16] rounded-2xl bg-slate-900 border border-white/15 overflow-hidden relative group shadow-xl">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
+          
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-3 flex flex-col justify-between">
+            <div class="flex justify-between items-center">
+              <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-600/80 text-white border border-amber-400/30">
+                #Session-126
+              </span>
+            </div>
+
+            <div class="space-y-2">
+              <p class="text-[10px] font-bold text-white truncate">Retro 90s Film</p>
+              <div class="flex items-center justify-between bg-black/60 backdrop-blur-md p-1.5 rounded-xl border border-white/15">
+                <button onclick="alert('Pratinjau Foto #Session-126')" class="p-1.5 rounded-lg hover:bg-white/20 text-slate-200 hover:text-white transition" title="Lihat Foto">
+                  <i data-lucide="eye" class="w-4 h-4"></i>
+                </button>
+                <button onclick="alert('Mengunduh Foto #Session-126')" class="p-1.5 rounded-lg hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 transition" title="Download">
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                </button>
+                <button onclick="alert('Menampilkan QR Code Foto #Session-126')" class="p-1.5 rounded-lg hover:bg-indigo-500/30 text-indigo-300 hover:text-indigo-200 transition" title="Tampilkan QR Code">
+                  <i data-lucide="qr-code" class="w-4 h-4"></i>
+                </button>
+                <button onclick="confirm('Hapus foto ini?')" class="p-1.5 rounded-lg hover:bg-rose-500/30 text-rose-400 hover:text-rose-200 transition" title="Hapus Foto">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+  </script>
+</body>
+</html>

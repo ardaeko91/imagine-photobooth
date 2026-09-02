@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hardware - Admin Imagine Photobooth</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
+    @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
+    .aurora-admin {
+      position: absolute; width: 180%; height: 180%; top: -40%; left: -40%;
+      background: conic-gradient(from 0deg at 50% 50%, #1e293b 0deg, #334155 90deg, #475569 180deg, #0f172a 270deg, #1e293b 360deg);
+      filter: blur(80px); animation: auroraRotate 20s linear infinite; border-radius: 50%; pointer-events: none; opacity: 0.8;
+    }
+  </style>
+</head>
+<body class="h-screen text-slate-100 flex overflow-hidden relative">
+  <div class="aurora-admin"></div>
+
+  <aside class="w-64 h-screen sticky top-0 border-r border-white/10 bg-slate-950/90 backdrop-blur-2xl p-6 flex flex-col justify-between shrink-0 z-30">
+    <div class="space-y-8">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center font-bold text-indigo-400">
+          <i data-lucide="sparkles" class="w-5 h-5 text-indigo-400"></i>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-white">Photobooth AI</h1>
+          <p class="text-[10px] text-slate-400 font-mono">ADMIN PANEL v1.0</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1.5 text-xs font-semibold">
+        <a href="index.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+        </a>
+        <a href="presets.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="palette" class="w-4 h-4"></i> Preset & Prompts
+        </a>
+        <a href="branding.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="image" class="w-4 h-4"></i> Branding & Overlay
+        </a>
+        <a href="gallery.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="folder-open" class="w-4 h-4"></i> Gallery & Storage
+        </a>
+        <a href="hardware.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+          <i data-lucide="camera" class="w-4 h-4"></i> Camera & Hardware
+        </a>
+        <a href="analytics.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Analytics & Tokens
+        </a>
+      </nav>
+    </div>
+
+    <div class="pt-6 border-t border-white/10">
+      <a href="../user/index.html" target="_blank" class="w-full py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center justify-center gap-2 border border-white/15 transition">
+        <i data-lucide="external-link" class="w-4 h-4"></i> Buka User Kiosk
+      </a>
+    </div>
+  </aside>
+
+  <div class="flex-1 flex flex-col h-screen overflow-y-auto z-10">
+    <header class="p-6 border-b border-white/10 flex justify-between items-center bg-slate-950/60 backdrop-blur-md sticky top-0 z-20">
+      <div>
+        <h2 class="text-xl font-bold text-white">Camera & Hardware Configuration</h2>
+        <p class="text-xs text-slate-400">Pengaturan input DSLR/Webcam dan pewaktu hitung mundur (*countdown*)</p>
+      </div>
+      <button onclick="alert('Hardware Disimpan!')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
+        <i data-lucide="save" class="w-4 h-4"></i> Simpan Hardware
+      </button>
+    </header>
+
+    <main class="p-8 space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <i data-lucide="video" class="w-4 h-4 text-indigo-400"></i> Sumber Kamera Utama
+          </h3>
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="text-slate-300 font-semibold block mb-1.5">PILIH PERANGKAT KAMERA</label>
+              <select class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
+                <option value="dslr">DSLR Camera (Canon EOS / Sony USB Tethering)</option>
+                <option value="webcam" selected>Webcam HD (Built-in FaceTime / USB Cam)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <i data-lucide="timer" class="w-4 h-4 text-indigo-400"></i> Countdown Timer
+          </h3>
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="text-slate-300 font-semibold block mb-1.5">DURASI HITUNG MUNDUR (DETIK)</label>
+              <select class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
+                <option value="3">3 Detik</option>
+                <option value="5" selected>5 Detik</option>
+                <option value="10">10 Detik</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+  </script>
+</body>
+</html>

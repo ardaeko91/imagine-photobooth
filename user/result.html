@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hasil Foto AI - Imagine Photobooth AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
+
+    @keyframes auroraRotate {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.3); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    .aurora-bg {
+      position: absolute;
+      width: 180%;
+      height: 180%;
+      top: -40%;
+      left: -40%;
+      background: conic-gradient(
+        from 0deg at 50% 50%,
+        #10b981 0deg,
+        #06b6d4 100deg,
+        #6366f1 200deg,
+        #ec4899 280deg,
+        #10b981 360deg
+      );
+      filter: blur(60px);
+      animation: auroraRotate 16s linear infinite;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8 select-none">
+
+  <div class="w-full max-w-sm md:max-w-4xl h-[844px] md:h-[680px] bg-slate-950/60 text-white flex flex-col justify-between items-center p-6 md:p-8 relative overflow-hidden rounded-[40px] border border-white/20 shadow-2xl backdrop-blur-3xl transition-all duration-500">
+    
+    <div class="aurora-bg"></div>
+
+    <header class="w-full flex justify-between items-center z-10 pt-2">
+      <a href="index.html" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-slate-300 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+      </a>
+      <span class="text-xs font-mono text-emerald-300 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30">
+        STEP 4: HASIL FOTO
+      </span>
+    </header>
+
+    <main class="w-full my-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-10 z-10">
+      
+      <div class="relative w-[190px] md:w-[220px] aspect-[9/16] rounded-3xl bg-slate-900 border-2 border-emerald-400/50 overflow-hidden shadow-2xl group">
+        <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" alt="AI Generated Result" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent p-4 flex flex-col justify-end">
+          <span class="text-[10px] font-mono text-emerald-300 uppercase tracking-widest">STYLE: CYBERPUNK</span>
+          <p class="text-xs font-bold text-white">Imagine Photobooth AI</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col items-center md:items-start text-center md:text-left space-y-5">
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
+            Fotomu Sudah Jadi! 🎉
+          </h2>
+          <p class="text-xs text-slate-300 mt-1">Scan QR Code untuk simpan foto ke HP milikmu</p>
+        </div>
+
+        <div class="p-4 rounded-3xl bg-black/40 border border-white/15 backdrop-blur-md flex items-center gap-4 shadow-xl">
+          <div class="w-24 h-24 bg-white p-2 rounded-2xl flex items-center justify-center shadow-inner">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://instagram.com/ardaeko" alt="QR Code Download" class="w-full h-full object-contain" />
+          </div>
+          <div class="text-left space-y-1">
+            <span class="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">SCAN VIA HP</span>
+            <p class="text-xs text-slate-200 font-medium leading-snug">Gunakan kamera HP untuk mengunduh versi HD</p>
+          </div>
+        </div>
+
+        <div class="w-full flex gap-3">
+          <a href="index.html" class="flex-1 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/15 font-bold text-xs text-center transition">
+            🔄 FOTO LAGI
+          </a>
+          <button onclick="alert('Mengunduh foto resolusi tinggi...')" class="flex-1 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs text-center transition shadow-lg shadow-emerald-500/30">
+            ⬇️ DOWNLOAD
+          </button>
+        </div>
+
+      </div>
+
+    </main>
+
+    <footer class="w-full py-3 text-center z-10 border-t border-white/10">
+      <p class="text-[11px] text-slate-300">
+        Imagine Photobooth Ai v1.0 | Develope by <a href="https://www.instagram.com/ardaeko/" target="_blank" class="text-white font-semibold">@ardaeko</a>
+      </p>
+    </footer>
+  </div>
+
+</body>
+</html>

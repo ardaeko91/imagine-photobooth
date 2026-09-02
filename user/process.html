@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Processing AI - Imagine Photobooth AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
+
+    @keyframes auroraRotate {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.4); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    .aurora-bg {
+      position: absolute;
+      width: 180%;
+      height: 180%;
+      top: -40%;
+      left: -40%;
+      background: conic-gradient(
+        from 0deg at 50% 50%,
+        #3b82f6 0deg,
+        #8b5cf6 90deg,
+        #ec4899 180deg,
+        #06b6d4 270deg,
+        #3b82f6 360deg
+      );
+      filter: blur(60px);
+      animation: auroraRotate 8s linear infinite;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8 select-none">
+
+  <div class="w-full max-w-sm md:max-w-4xl h-[844px] md:h-[680px] bg-slate-950/60 text-white flex flex-col justify-between items-center p-6 md:p-10 relative overflow-hidden rounded-[40px] border border-white/20 shadow-2xl backdrop-blur-3xl transition-all duration-500">
+    
+    <div class="aurora-bg"></div>
+
+    <header class="w-full flex justify-between items-center z-10 pt-2">
+      <div class="w-8"></div>
+      <span class="text-xs font-mono text-purple-300 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/30">
+        STEP 3: GENERATING AI
+      </span>
+      <div class="w-8"></div>
+    </header>
+
+    <main class="w-full my-auto flex flex-col items-center justify-center space-y-8 z-10 text-center">
+      
+      <div class="relative flex items-center justify-center">
+        <div class="absolute w-40 h-40 md:w-52 md:h-52 rounded-full bg-indigo-500/30 animate-ping"></div>
+        <div class="absolute w-32 h-32 md:w-40 md:h-40 rounded-full bg-purple-500/40 animate-pulse"></div>
+        <div class="relative w-24 h-24 md:w-32 md:h-32 rounded-full bg-slate-900/80 border-2 border-white/30 backdrop-blur-xl flex items-center justify-center shadow-2xl">
+          <svg class="w-12 h-12 md:w-16 md:h-16 text-indigo-300 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="w-full max-w-xs md:max-w-md space-y-4">
+        <div class="space-y-1">
+          <h2 id="statusTitle" class="text-lg md:text-xl font-bold text-white">Menganalisis Wajah...</h2>
+          <p class="text-xs text-slate-300 font-mono">Harap tunggu, AI sedang menyihir fotomu</p>
+        </div>
+
+        <div class="w-full h-3 bg-slate-900/80 rounded-full border border-white/15 overflow-hidden p-0.5">
+          <div id="progressBar" class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-300 w-0"></div>
+        </div>
+
+        <span id="progressText" class="text-xs font-mono text-indigo-300 font-bold">0%</span>
+      </div>
+
+    </main>
+
+    <footer class="w-full py-3 text-center z-10 border-t border-white/10">
+      <p class="text-[11px] text-slate-300">
+        Imagine Photobooth Ai v1.0 | Develope by <a href="https://www.instagram.com/ardaeko/" target="_blank" class="text-white font-semibold">@ardaeko</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const statusTitle = document.getElementById('statusTitle');
+
+    const statuses = [
+      { pct: 20, text: "Menganalisis Fitur Wajah..." },
+      { pct: 50, text: "Menerapkan Theme Preset AI..." },
+      { pct: 80, text: "Menghaluskan Detail & Pencahayaan..." },
+      { pct: 100, text: "Selesai! Membuka Hasil..." }
+    ];
+
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 2;
+      if (progress > 100) progress = 100;
+
+      progressBar.style.width = progress + '%';
+      progressText.innerText = progress + '%';
+
+      for (let s of statuses) {
+        if (progress <= s.pct) {
+          statusTitle.innerText = s.text;
+          break;
+        }
+      }
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => {
+          window.location.href = 'result.html';
+        }, 800);
+      }
+    }, 100);
+  </script>
+</body>
+</html>

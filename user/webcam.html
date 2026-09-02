@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Webcam Mode - Imagine Photobooth AI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
+    .mirror { transform: scaleX(-1); }
+
+    /* Animasi Aurora Cyan */
+    @keyframes auroraRotate {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.3); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    .aurora-bg {
+      position: absolute;
+      width: 180%;
+      height: 180%;
+      top: -40%;
+      left: -40%;
+      background: conic-gradient(
+        from 0deg at 50% 50%,
+        #06b6d4 0deg,
+        #10b981 100deg,
+        #3b82f6 200deg,
+        #0284c7 280deg,
+        #06b6d4 360deg
+      );
+      filter: blur(60px);
+      animation: auroraRotate 14s linear infinite;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+
+  <div class="w-full max-w-sm md:max-w-4xl h-[844px] md:h-[650px] bg-slate-950/60 text-white flex flex-col justify-between items-center p-6 md:p-10 relative overflow-hidden rounded-[40px] border border-white/20 shadow-2xl backdrop-blur-3xl transition-all duration-500">
+    
+    <!-- Background Aurora -->
+    <div class="aurora-bg"></div>
+
+    <header class="w-full flex justify-between items-center z-10 pt-2">
+      <a href="index.html" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-slate-300 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+      </a>
+      <span class="text-xs font-mono text-cyan-300 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30">
+        WEBCAM MODE
+      </span>
+    </header>
+
+    <main class="w-full my-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 z-10">
+      <div class="relative w-full md:w-[380px] aspect-[3/4] bg-slate-900 rounded-3xl overflow-hidden border border-white/20 shadow-2xl flex items-center justify-center">
+        <video id="webcamVideo" autoplay playsinline muted class="w-full h-full object-cover mirror"></video>
+        
+        <div id="errorBox" class="hidden absolute inset-0 bg-slate-950/90 p-6 flex flex-col items-center justify-center text-center space-y-3 z-20">
+          <div class="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl">⚠️</div>
+          <p id="errorText" class="text-xs text-slate-300 leading-relaxed">Gagal mengakses kamera.</p>
+          <button onclick="initCamera()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold border border-white/15">
+            Coba Lagi
+          </button>
+        </div>
+
+        <div class="absolute inset-0 border-2 border-cyan-400/40 rounded-3xl pointer-events-none"></div>
+        <div id="countdown" class="hidden absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center text-7xl font-black text-white">3</div>
+      </div>
+
+      <div class="flex flex-col items-center space-y-4">
+        <p class="hidden md:block text-xs font-mono text-slate-300">Posisikan wajah di tengah area kamera</p>
+        <button id="captureBtn" onclick="startCapture()" class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-cyan-500 hover:bg-cyan-400 border-4 border-white/30 flex items-center justify-center shadow-lg shadow-cyan-500/50 active:scale-90 transition-all">
+          <div class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white"></div>
+        </button>
+      </div>
+    </main>
+
+    <footer class="w-full py-3 text-center z-10 border-t border-white/10">
+      <p class="text-[11px] text-slate-300">
+        Imagine Photobooth Ai v1.0 | Develope by <a href="https://www.instagram.com/ardaeko/" target="_blank" class="text-white font-semibold">@ardaeko</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    const video = document.getElementById('webcamVideo');
+    const errorBox = document.getElementById('errorBox');
+    const errorText = document.getElementById('errorText');
+
+    async function initCamera() {
+      errorBox.classList.add('hidden');
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showError("Browser tidak mendukung WebRTC camera.");
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        video.srcObject = stream;
+        await video.play();
+      } catch (err) {
+        showError("Akses kamera ditolak atau tidak ditemukan.");
+      }
+    }
+
+    function showError(msg) {
+      errorText.innerText = msg;
+      errorBox.classList.remove('hidden');
+    }
+
+    function startCapture() {
+      const countdownEl = document.getElementById('countdown');
+      countdownEl.classList.remove('hidden');
+      let count = 3;
+      countdownEl.innerText = count;
+      const timer = setInterval(() => {
+        count--;
+        if (count > 0) { countdownEl.innerText = count; } 
+        else {
+          clearInterval(timer);
+          countdownEl.innerText = "📸";
+          setTimeout(() => { alert("Foto berhasil diambil!"); countdownEl.classList.add('hidden'); }, 500);
+        }
+      }, 1000);
+    }
+
+    window.addEventListener('DOMContentLoaded', initCamera);
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Imagine Photobooth AI v1.0</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
+    @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.25); } 100% { transform: rotate(360deg) scale(1); } }
+    @keyframes auroraPulse { 0%, 100% { opacity: 0.5; transform: translateY(0px) scale(1); } 50% { opacity: 0.85; transform: translateY(-30px) scale(1.15); } }
+    .aurora-bg { position: absolute; width: 160%; height: 160%; top: -30%; left: -30%; background: conic-gradient(from 0deg at 50% 50%, #4f46e5 0deg, #c084fc 70deg, #ec4899 140deg, #3b82f6 220deg, #6366f1 290deg, #4f46e5 360deg); filter: blur(80px); animation: auroraRotate 15s linear infinite; border-radius: 50%; pointer-events: none; }
+    .aurora-wave { position: absolute; inset: 0; background: radial-gradient(circle at 50% 30%, rgba(236, 72, 153, 0.4), transparent 60%), radial-gradient(circle at 20% 70%, rgba(99, 102, 241, 0.5), transparent 50%); filter: blur(60px); animation: auroraPulse 8s ease-in-out infinite; pointer-events: none; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-white flex items-center justify-center p-4 md:p-8">
+
+  <div class="w-full max-w-sm md:max-w-4xl h-[844px] md:h-[650px] bg-slate-950/70 text-white flex flex-col justify-between items-center p-6 md:p-10 relative overflow-hidden rounded-[40px] border border-white/10 shadow-2xl backdrop-blur-3xl transition-all duration-500">
+    <div class="aurora-bg"></div>
+    <div class="aurora-wave"></div>
+
+    <div class="w-full pt-2 flex justify-between items-center text-xs text-slate-400 font-mono z-10">
+      <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> READY</span>
+      <span class="px-2.5 py-0.5 rounded-full bg-black/40 border border-white/10 text-[10px] text-slate-300 uppercase">Interactive Kiosk Display</span>
+    </div>
+
+    <main class="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 z-10 my-auto">
+      
+      <!-- Brand Section -->
+      <div class="flex flex-col items-center md:items-start text-center md:text-left space-y-4">
+        <div class="relative group">
+          <div class="absolute -inset-1.5 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-70 blur-md"></div>
+          <div class="relative w-24 h-24 md:w-32 md:h-32 rounded-full bg-slate-900/60 backdrop-blur-xl border border-white/20 shadow-2xl flex items-center justify-center p-1">
+            <div class="w-full h-full rounded-full bg-gradient-to-tr from-indigo-500/30 via-purple-500/20 to-pink-500/30 border border-white/20 flex items-center justify-center">
+              <svg class="w-10 h-10 md:w-14 md:h-14 text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <h1 class="text-2xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent">
+            Imagine Photobooth
+          </h1>
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-md">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-300 animate-pulse"></span>
+            <span class="text-[10px] md:text-xs font-mono tracking-widest text-indigo-200 font-semibold uppercase">AI v1.0 Engine</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Box -->
+      <div class="w-full md:w-80 p-5 rounded-3xl bg-black/30 backdrop-blur-2xl border border-white/15 shadow-2xl">
+        <p class="text-[11px] md:text-xs text-slate-300 mb-4 font-medium tracking-wider uppercase text-center md:text-left">Pilih Sumber Kamera</p>
+        <div class="grid grid-cols-3 gap-3">
+          <a href="camera.html" title="DSLR Camera" class="aspect-square rounded-2xl bg-white/5 hover:bg-white/15 border border-white/15 flex flex-col items-center justify-center transition hover:scale-105 active:scale-95 group">
+            <svg class="w-7 h-7 text-slate-200 group-hover:text-indigo-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0c-.693.037-1.332.42-1.736 1.039l-.821 1.316z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zM18.75 10.5h.008v.008h-.008V10.5z"/></svg>
+          </a>
+          <a href="webcam.html" title="Webcam" class="aspect-square rounded-2xl bg-indigo-500/30 hover:bg-indigo-500/50 border border-indigo-300/40 flex flex-col items-center justify-center transition hover:scale-105 active:scale-95 group shadow-lg shadow-indigo-500/30">
+            <svg class="w-7 h-7 text-indigo-200 group-hover:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+          </a>
+          <a href="import.html" title="Import Photo" class="aspect-square rounded-2xl bg-white/5 hover:bg-white/15 border border-white/15 flex flex-col items-center justify-center transition hover:scale-105 active:scale-95 group">
+            <svg class="w-7 h-7 text-slate-200 group-hover:text-pink-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="w-full py-3 text-center z-10 border-t border-white/10">
+      <p class="text-[11px] text-slate-300 font-medium tracking-wide">
+        Imagine Photobooth Ai v1.0 | Develope by <a href="https://www.instagram.com/ardaeko/" target="_blank" class="text-white hover:text-indigo-300 font-semibold">@ardaeko</a>
+      </p>
+    </footer>
+
+  </div>
+
+</body>
+</html>

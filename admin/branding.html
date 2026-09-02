@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Branding & Overlay - Admin Imagine Photobooth</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
+    @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
+    .aurora-admin {
+      position: absolute; width: 180%; height: 180%; top: -40%; left: -40%;
+      background: conic-gradient(from 0deg at 50% 50%, #1e293b 0deg, #334155 90deg, #475569 180deg, #0f172a 270deg, #1e293b 360deg);
+      filter: blur(80px); animation: auroraRotate 20s linear infinite; border-radius: 50%; pointer-events: none; opacity: 0.8;
+    }
+  </style>
+</head>
+<body class="h-screen text-slate-100 flex overflow-hidden relative">
+  <div class="aurora-admin"></div>
+
+  <aside class="w-64 h-screen sticky top-0 border-r border-white/10 bg-slate-950/90 backdrop-blur-2xl p-6 flex flex-col justify-between shrink-0 z-30">
+    <div class="space-y-8">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center font-bold text-indigo-400">
+          <i data-lucide="sparkles" class="w-5 h-5 text-indigo-400"></i>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-white">Photobooth AI</h1>
+          <p class="text-[10px] text-slate-400 font-mono">ADMIN PANEL v1.0</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1.5 text-xs font-semibold">
+        <a href="index.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
+        </a>
+        <a href="presets.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="palette" class="w-4 h-4"></i> Preset & Prompts
+        </a>
+        <a href="branding.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+          <i data-lucide="image" class="w-4 h-4"></i> Branding & Overlay
+        </a>
+        <a href="gallery.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="folder-open" class="w-4 h-4"></i> Gallery & Storage
+        </a>
+        <a href="hardware.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="camera" class="w-4 h-4"></i> Camera & Hardware
+        </a>
+        <a href="analytics.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
+          <i data-lucide="bar-chart-3" class="w-4 h-4"></i> Analytics & Tokens
+        </a>
+      </nav>
+    </div>
+
+    <div class="pt-6 border-t border-white/10">
+      <a href="../user/index.html" target="_blank" class="w-full py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold flex items-center justify-center gap-2 border border-white/15 transition">
+        <i data-lucide="external-link" class="w-4 h-4"></i> Buka User Kiosk
+      </a>
+    </div>
+  </aside>
+
+  <div class="flex-1 flex flex-col h-screen overflow-y-auto z-10">
+    <header class="p-6 border-b border-white/10 flex justify-between items-center bg-slate-950/60 backdrop-blur-md sticky top-0 z-20">
+      <div>
+        <h2 class="text-xl font-bold text-white">Branding & Overlay Watermark</h2>
+        <p class="text-xs text-slate-400">Atur bingkai event, logo sponsor, dan watermark brand</p>
+      </div>
+      <button onclick="alert('Branding Disimpan!')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
+        <i data-lucide="save" class="w-4 h-4"></i> Simpan Branding
+      </button>
+    </header>
+
+    <main class="p-8 space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <div class="md:col-span-2 space-y-6">
+          <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="type" class="w-4 h-4 text-indigo-400"></i> Informasi Identitas Brand
+            </h3>
+            <div class="grid grid-cols-2 gap-4 text-xs">
+              <div>
+                <label class="text-slate-300 font-semibold block mb-1.5">NAMA BRAND / EVENT</label>
+                <input type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-bold" value="LuxaryMedia_AiProject" />
+              </div>
+              <div>
+                <label class="text-slate-300 font-semibold block mb-1.5">INSTAGRAM HANDLE</label>
+                <input type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-bold" value="@ardaeko" />
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
+            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+              <i data-lucide="layers" class="w-4 h-4 text-indigo-400"></i> Upload Frame Event PNG
+            </h3>
+            <div onclick="document.getElementById('frameInput').click()" class="w-full py-8 rounded-2xl border-2 border-dashed border-white/20 hover:border-indigo-400 bg-black/30 transition cursor-pointer flex flex-col items-center justify-center space-y-2 text-center">
+              <i data-lucide="upload-cloud" class="w-8 h-8 text-indigo-400"></i>
+              <p class="text-xs font-semibold text-slate-200">Klik untuk upload file PNG Overlay (Rasio 9:16)</p>
+              <input type="file" id="frameInput" accept="image/png" class="hidden" />
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3 flex flex-col items-center">
+          <h3 class="text-xs font-bold text-slate-300 self-start">LIVE PREVIEW OVERLAY</h3>
+          <div class="relative w-[200px] aspect-[9/16] rounded-3xl bg-slate-900 border-2 border-indigo-500/50 overflow-hidden shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" class="w-full h-full object-cover" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-4 flex flex-col justify-end text-center">
+              <p class="text-[10px] font-mono text-indigo-300 font-bold">DEVELOPED BY @ardaeko</p>
+              <p class="text-[9px] text-slate-300">LuxaryMedia_AiProject</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+  </script>
+</body>
+</html>
