@@ -6,6 +6,7 @@
   <title>Hardware - Admin Imagine Photobooth</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="../js/store.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
     @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
@@ -66,7 +67,7 @@
         <h2 class="text-xl font-bold text-white">Camera & Hardware Configuration</h2>
         <p class="text-xs text-slate-400">Pengaturan input DSLR/Webcam dan pewaktu hitung mundur (*countdown*)</p>
       </div>
-      <button onclick="alert('Hardware Disimpan!')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
+      <button onclick="saveHardwareHandler()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
         <i data-lucide="save" class="w-4 h-4"></i> Simpan Hardware
       </button>
     </header>
@@ -81,7 +82,7 @@
           <div class="space-y-3 text-xs">
             <div>
               <label class="text-slate-300 font-semibold block mb-1.5">PILIH PERANGKAT KAMERA</label>
-              <select class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
+              <select id="cameraSelect" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
                 <option value="dslr">DSLR Camera (Canon EOS / Sony USB Tethering)</option>
                 <option value="webcam" selected>Webcam HD (Built-in FaceTime / USB Cam)</option>
               </select>
@@ -96,7 +97,7 @@
           <div class="space-y-3 text-xs">
             <div>
               <label class="text-slate-300 font-semibold block mb-1.5">DURASI HITUNG MUNDUR (DETIK)</label>
-              <select class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
+              <select id="countdownSelect" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
                 <option value="3">3 Detik</option>
                 <option value="5" selected>5 Detik</option>
                 <option value="10">10 Detik</option>
@@ -110,7 +111,25 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+    document.addEventListener("DOMContentLoaded", function() {
+      lucide.createIcons();
+      loadHardware();
+    });
+
+    function loadHardware() {
+      var h = getHardware();
+      document.getElementById('cameraSelect').value = h.camera || 'webcam';
+      document.getElementById('countdownSelect').value = String(h.countdown || 5);
+    }
+
+    function saveHardwareHandler() {
+      var data = {
+        camera: document.getElementById('cameraSelect').value,
+        countdown: parseInt(document.getElementById('countdownSelect').value, 10)
+      };
+      saveHardware(data);
+      showToast('Pengaturan hardware disimpan ✓', 'success');
+    }
   </script>
 </body>
 </html>

@@ -6,6 +6,7 @@
   <title>Preset Playground - Admin Imagine Photobooth</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="../js/store.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
     @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
@@ -78,7 +79,7 @@
           <p class="text-xs text-slate-400">Racik prompt & multi-gambar referensi dengan uji coba langsung</p>
         </div>
       </div>
-      <button onclick="alert('Preset Berhasil Diterbitkan ke Daftar Template!')" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-emerald-600/30">
+      <button onclick="savePreset()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-emerald-600/30">
         <i data-lucide="check-circle" class="w-4 h-4"></i> Simpan & Terbitkan
       </button>
     </header>
@@ -91,13 +92,13 @@
           <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
             <div>
               <label class="text-xs font-bold text-slate-200 block mb-1.5">NAMA TEMPLATE PRESET</label>
-              <input type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-bold text-xs" value="Victorian Fashion & Cat Style" />
+              <input id="nameInput" type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-bold text-xs" value="Victorian Fashion & Cat Style" />
             </div>
 
             <div class="grid grid-cols-2 gap-3 text-xs">
               <div>
                 <label class="text-slate-300 font-semibold block mb-1.5">ASPECT RATIO</label>
-                <select class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
+                <select id="ratioSelect" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
                   <option value="9:16" selected>9:16 (Portrait Kiosk)</option>
                   <option value="1:1">1:1 (Square)</option>
                   <option value="4:3">4:3 (Landscape)</option>
@@ -105,7 +106,7 @@
               </div>
               <div>
                 <label class="text-slate-300 font-semibold block mb-1.5">AI ENGINE MODEL</label>
-                <select class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
+                <select id="modelSelect" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
                   <option value="flux-dev">FLUX.1 Dev (fal.ai)</option>
                   <option value="sdxl">SDXL ControlNet</option>
                 </select>
@@ -114,7 +115,17 @@
 
             <div>
               <label class="text-xs font-bold text-slate-200 block mb-1.5">PROMPT INSTRUCTION</label>
-              <textarea class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono text-xs leading-relaxed" rows="3">Dress the model in the clothes and hat. Add a cat to the scene and change the background to a Victorian era building.</textarea>
+              <textarea id="promptInput" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono text-xs leading-relaxed" rows="3">Dress the model in the clothes and hat. Add a cat to the scene and change the background to a Victorian era building.</textarea>
+
+              <div>
+                <label class="text-xs font-bold text-slate-200 block mb-1.5">GAMBAR PREVIEW (URL atau bisa kosong)</label>
+                <input id="imageInput" type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono text-xs" placeholder="https://.../foto.jpg" />
+              </div>
+
+              <label class="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/15 cursor-pointer">
+                <span class="text-xs font-semibold text-slate-300">Aktif tampil di kiosk user</span>
+                <input id="activeInput" type="checkbox" class="w-4 h-4 accent-indigo-500" checked />
+              </label>
             </div>
           </div>
 
@@ -130,17 +141,17 @@
               <button onclick="document.getElementById('multiRefInput').click()" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
                 <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Image
               </button>
-              <input type="file" id="multiRefInput" multiple accept="image/*" class="hidden" />
+              <input type="file" id="multiRefInput" multiple accept="image/*" class="hidden" onchange="handleMultiRefUpload(this)" />
             </div>
 
             <div class="relative group">
-              <div class="flex gap-3 overflow-x-auto no-scrollbar py-1 scroll-smooth">
+              <div id="multiRefRow" class="flex gap-3 overflow-x-auto no-scrollbar py-1 scroll-smooth">
                 
                 <!-- Ref #1 -->
                 <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
                   <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&auto=format&fit=crop" class="w-full h-full object-cover rounded-xl" />
                   <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#1: Model</span>
-                  <button onclick="alert('Hapus Referensi #1')" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
+                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
@@ -149,7 +160,7 @@
                 <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
                   <img src="https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=400&auto=format&fit=crop" class="w-full h-full object-cover rounded-xl" />
                   <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#2: Outfit</span>
-                  <button onclick="alert('Hapus Referensi #2')" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
+                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
@@ -158,7 +169,7 @@
                 <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
                   <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&auto=format&fit=crop" class="w-4 h-4 object-cover w-full h-full rounded-xl" />
                   <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#3: BG</span>
-                  <button onclick="alert('Hapus Referensi #3')" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
+                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
@@ -167,7 +178,7 @@
                 <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
                   <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&auto=format&fit=crop" class="w-full h-full object-cover rounded-xl" />
                   <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#4: Pose</span>
-                  <button onclick="alert('Hapus Referensi #4')" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
+                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
@@ -176,7 +187,7 @@
                 <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
                   <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&auto=format&fit=crop" class="w-full h-full object-cover rounded-xl" />
                   <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#5: Cat</span>
-                  <button onclick="alert('Hapus Referensi #5')" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
+                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
                     <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                   </button>
                 </div>
@@ -187,8 +198,8 @@
 
           <div class="flex items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/10">
             <span class="text-xs text-slate-300 font-mono">Cost Estimation: <b class="text-emerald-400">$0.03 / run</b></span>
-            <button onclick="alert('Menjalankan AI Generation Test...')" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/40">
-              <i data-lucide="play" class="w-4 h-4 fill-current"></i> RUN TEST GENERATE
+            <button id="runBtn" onclick="runTestGenerate()" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/40">
+              <i data-lucide="play" class="w-4 h-4 fill-current"></i> <span>RUN TEST GENERATE</span>
             </button>
           </div>
         </div>
@@ -197,11 +208,15 @@
         <div class="lg:col-span-5 space-y-4 flex flex-col items-center">
           <div class="w-full flex justify-between items-center">
             <h3 class="text-xs font-bold text-slate-200">PLAYGROUND RESULT</h3>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">STATUS: IDLE</span>
+            <span id="statusText" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">STATUS: IDLE</span>
           </div>
 
           <div class="relative w-full max-w-[280px] aspect-[9/16] rounded-3xl bg-slate-900 border-2 border-indigo-500/50 overflow-hidden shadow-2xl group">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop" class="w-full h-full object-cover" />
+            <img id="renderImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop" class="w-full h-full object-cover" />
+            <div id="renderOverlay" class="absolute inset-0 hidden bg-slate-950/90 flex-col items-center justify-center gap-3 text-center p-6">
+              <div class="w-10 h-10 rounded-full border-4 border-indigo-500/30 border-t-indigo-500 animate-spin"></div>
+              <p id="renderOverlayText" class="text-xs font-mono text-indigo-300">GENERATING...</p>
+            </div>
           </div>
         </div>
 
@@ -210,7 +225,151 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+    document.addEventListener("DOMContentLoaded", function() {
+      lucide.createIcons();
+      loadPreset();
+    });
+
+    // Ambil ?id= untuk mode edit; kalau tidak ada berarti preset baru.
+    function getEditId() {
+      return new URLSearchParams(window.location.search).get('id');
+    }
+
+    function loadPreset() {
+      var id = getEditId();
+      if (!id) return;
+      var p = getPresetById(id);
+      if (!p) { showToast('Preset tidak ditemukan', 'error'); return; }
+
+      document.getElementById('nameInput').value = p.name || '';
+      document.getElementById('imageInput').value = p.image || '';
+      document.getElementById('promptInput').value = p.prompt || '';
+      document.getElementById('ratioSelect').value = p.ratio || '9:16';
+      document.getElementById('modelSelect').value = p.model || 'flux-dev';
+      document.getElementById('activeInput').checked = !!p.active;
+
+      var img = document.getElementById('renderImg');
+      if (p.image) img.src = p.image;
+
+      document.title = 'Edit: ' + p.name + ' - Preset Editor';
+    }
+
+    function savePreset() {
+      var name = document.getElementById('nameInput').value.trim();
+      if (!name) { showToast('Nama preset wajib diisi', 'error'); return; }
+
+      var image = document.getElementById('imageInput').value.trim();
+      var ratio = document.getElementById('ratioSelect').value;
+      var model = document.getElementById('modelSelect').value;
+      var prompt = document.getElementById('promptInput').value.trim();
+      var active = document.getElementById('activeInput').checked;
+
+      var list = getPresets();
+      var id = getEditId();
+      var existing = id ? list.find(function (x) { return x.id === String(id); }) : null;
+
+      if (existing) {
+        existing.name = name;
+        existing.image = image;
+        existing.ratio = ratio;
+        existing.model = model;
+        existing.prompt = prompt;
+        existing.active = active;
+      } else {
+        list.push({ id: uid('p'), name: name, image: image, ratio: ratio, model: model, prompt: prompt, active: active });
+      }
+
+      savePresets(list);
+      showToast('Preset "' + name + '" disimpan ✓', 'success');
+      setTimeout(function () { window.location.href = 'presets.html'; }, 600);
+    }
+
+    function runTestGenerate() {
+      var name = document.getElementById('nameInput').value.trim() || 'Untitled';
+      var btn = document.getElementById('runBtn');
+      var status = document.getElementById('statusText');
+      var overlay = document.getElementById('renderOverlay');
+      var img = document.getElementById('renderImg');
+      var overlayText = document.getElementById('renderOverlayText');
+
+      if (btn.dataset.running === '1') return;
+
+      btn.dataset.running = '1';
+      btn.disabled = true;
+      btn.querySelector('span').textContent = 'GENERATING...';
+      status.textContent = 'STATUS: PROCESSING';
+      status.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300';
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+      overlayText.textContent = 'AI sedang meracik gaya "' + name + '"...';
+
+      // Simulasi proses generate
+      var progress = 0;
+      var maxSteps = ['Menganalisis wajah...', 'Menerapkan gaya...', 'Menghaluskan detail...', 'Menambahkan sentuhan AI...'];
+      var step = 0;
+      var timer = setInterval(function () {
+        progress += Math.floor(Math.random() * 18) + 8;
+        if (step < maxSteps.length) overlayText.textContent = maxSteps[step];
+        step++;
+        if (progress >= 100) {
+          clearInterval(timer);
+          finishGenerate(btn, status, overlay, name);
+        }
+      }, 450);
+    }
+
+    function finishGenerate(btn, status, overlay, name) {
+      btn.dataset.running = '';
+      btn.disabled = false;
+      btn.querySelector('span').textContent = 'RUN AGAIN';
+      status.textContent = 'STATUS: DONE';
+      status.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300';
+
+      var img = document.getElementById('renderImg');
+      var imageUrl = document.getElementById('imageInput').value.trim();
+      // Pakai gambar preview jika ada URL, abaikan untuk hasil (simulasi).
+      // Catat hasil ke galeri sebagai foto tersimpan.
+      var previewSrc = imageUrl || img.src;
+      addToGallery({
+        id: uid('g'),
+        session: 'RN' + Date.now().toString().slice(-6),
+        theme: name,
+        photo: previewSrc,
+        source: 'test'
+      });
+
+      overlay.classList.add('hidden');
+      overlay.classList.remove('flex');
+      overlayText.textContent = 'GENERATING...';
+      showToast('Generate test selesai & masuk Gallery', 'success');
+    }
+
+    // --- Multi Image References: hapus thumbnail & tambah dari file ---
+    function removeRef(btn) {
+      var card = btn.closest('.shrink-0');
+      if (card) card.remove();
+    }
+
+    function handleMultiRefUpload(input) {
+      Array.prototype.forEach.call(input.files || [], function (file) {
+        if (!file.type.match('image/.*')) return;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var container = document.querySelector('#multiRefRow');
+          if (!container) return;
+          var div = document.createElement('div');
+          div.className = 'shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item';
+          div.innerHTML =
+            '<img src="' + e.target.result + '" class="w-full h-full object-cover rounded-xl" />' +
+            '<span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#Ref</span>' +
+            '<button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>';
+          container.appendChild(div);
+          lucide.createIcons();
+        };
+        reader.readAsDataURL(file);
+      });
+      input.value = '';
+    }
   </script>
 </body>
 </html>

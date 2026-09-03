@@ -1,106 +1,92 @@
-cat << 'EOF' > import.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Import Local Photo - Imagine Photobooth AI</title>
+  <title>Upload Foto - Imagine Photobooth AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
-
-    /* Animasi Aurora Magenta & Rose */
-    @keyframes auroraRotate {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.3); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-    .aurora-bg {
-      position: absolute;
-      width: 180%;
-      height: 180%;
-      top: -40%;
-      left: -40%;
-      background: conic-gradient(
-        from 0deg at 50% 50%,
-        #e11d48 0deg,
-        #f43f5e 100deg,
-        #c084fc 200deg,
-        #e879f9 280deg,
-        #e11d48 360deg
-      );
-      filter: blur(60px);
-      animation: auroraRotate 16s linear infinite;
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: 0.85;
+    @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
+    .aurora {
+      position: absolute; width: 180%; height: 180%; top: -40%; left: -40%;
+      background: conic-gradient(from 0deg at 50% 50%, #4f46e5 0deg, #7c3aed 90deg, #db2777 180deg, #0284c7 270deg, #4f46e5 360deg);
+      filter: blur(90px); animation: auroraRotate 25s linear infinite; border-radius: 50%; pointer-events: none; opacity: 0.5;
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+<body class="min-h-screen text-slate-100 flex flex-col justify-between p-4 md:p-8 relative overflow-x-hidden select-none">
+  <div class="aurora"></div>
 
-  <div class="w-full max-w-sm md:max-w-4xl h-[844px] md:h-[650px] bg-slate-950/60 text-white flex flex-col justify-between items-center p-6 md:p-10 relative overflow-hidden rounded-[40px] border border-white/20 shadow-2xl backdrop-blur-3xl transition-all duration-500">
-    
-    <!-- Background Aurora -->
-    <div class="aurora-bg"></div>
+  <header class="w-full max-w-4xl mx-auto flex justify-between items-center z-10">
+    <a href="index.html" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold border border-white/15 transition">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali
+    </a>
+    <span class="font-bold text-sm text-white">Langkah 1: Pilih / Upload Foto</span>
+  </header>
 
-    <header class="w-full flex justify-between items-center z-10 pt-2">
-      <a href="index.html" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-slate-300 transition">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-      </a>
-      <span class="text-xs font-mono text-pink-300 px-3 py-1 rounded-full bg-pink-500/20 border border-pink-500/30">
-        IMPORT MODE
-      </span>
-    </header>
-
-    <main class="w-full my-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 z-10">
-      
-      <!-- Dropzone Area -->
-      <div id="dropzone" onclick="document.getElementById('fileInput').click()" class="w-full md:w-[380px] aspect-[3/4] rounded-3xl border-2 border-dashed border-white/30 hover:border-pink-400 bg-slate-900/50 hover:bg-slate-900/70 transition cursor-pointer flex flex-col items-center justify-center p-6 text-center relative overflow-hidden group shadow-2xl backdrop-blur-md">
-        <img id="imagePreview" class="hidden absolute inset-0 w-full h-full object-cover rounded-3xl" />
-        <div id="placeholder" class="space-y-3">
-          <div class="w-16 h-16 rounded-2xl bg-pink-500/20 text-pink-400 flex items-center justify-center mx-auto group-hover:scale-110 transition border border-pink-500/30">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
-          </div>
-          <div>
-            <p class="text-sm font-semibold text-slate-100">Klik untuk Upload Foto</p>
-            <p class="text-[11px] text-slate-300 mt-1">Format JPG, PNG (Maks 10MB)</p>
-          </div>
+  <main class="w-full max-w-md mx-auto z-10 my-auto space-y-5 text-center">
+    <div onclick="document.getElementById('fileInput').click()" class="w-full max-w-[260px] md:max-w-[300px] h-[52vh] max-h-[440px] min-h-[280px] mx-auto rounded-3xl border-2 border-dashed border-white/20 hover:border-indigo-400 bg-slate-900/80 backdrop-blur-xl transition cursor-pointer flex flex-col items-center justify-center p-6 relative overflow-hidden group shadow-2xl">
+      <img id="previewImage" class="hidden absolute inset-0 w-full h-full object-cover rounded-3xl" />
+      <div id="uploadPlaceholder" class="flex flex-col items-center space-y-3">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-600/30 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition">
+          <i data-lucide="upload-cloud" class="w-8 h-8"></i>
         </div>
-        <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="previewFile(event)" />
+        <div>
+          <p class="font-bold text-sm text-white">Klik atau Tarik Foto Ke Sini</p>
+          <p class="text-xs text-slate-400 mt-1">Format JPG, PNG (Maks 10MB)</p>
+        </div>
       </div>
+      <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="handleFileSelect(event)" />
+    </div>
 
-      <!-- Action Button -->
-      <div class="w-full md:w-80 flex flex-col space-y-4">
-        <button id="nextBtn" disabled class="w-full py-4 rounded-2xl bg-rose-600 disabled:opacity-40 hover:bg-rose-500 font-bold text-sm tracking-wide transition shadow-lg shadow-rose-500/40">
-          LANJUT PILIH STYLE AI →
-        </button>
-      </div>
+    <div class="w-full max-w-[300px] mx-auto">
+      <button id="nextBtn" onclick="goToStyle()" disabled class="w-full py-3.5 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition">
+        <span>Lanjut Pilih Gaya AI</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </main>
 
-    </main>
-
-    <footer class="w-full py-3 text-center z-10 border-t border-white/10">
-      <p class="text-[11px] text-slate-300">
-        Imagine Photobooth Ai v1.0 | Develope by <a href="https://www.instagram.com/ardaeko/" target="_blank" class="text-white font-semibold">@ardaeko</a>
-      </p>
-    </footer>
-  </div>
+  <footer class="w-full max-w-4xl mx-auto text-center z-10 border-t border-white/10 pt-4">
+    <p class="text-xs text-slate-400">LuxaryMedia_AiProject @ardaeko</p>
+  </footer>
 
   <script>
-    function previewFile(event) {
+    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+
+    function handleFileSelect(event) {
       const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('imagePreview').src = e.target.result;
-          document.getElementById('imagePreview').classList.remove('hidden');
-          document.getElementById('placeholder').classList.add('hidden');
-          document.getElementById('nextBtn').disabled = false;
-        }
-        reader.readAsDataURL(file);
+      if (!file) return;
+
+      // Validasi tipe & ukuran (maks 10MB, JPG/PNG)
+      if (!/^image\/(jpeg|png|webp)$/.test(file.type)) {
+        alert("Format tidak didukung. Gunakan JPG, PNG, atau WebP.");
+        return;
       }
+      if (file.size > 10 * 1024 * 1024) {
+        alert("Ukuran foto melebihi 10MB.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        document.getElementById('previewImage').src = dataUrl;
+        document.getElementById('previewImage').classList.remove('hidden');
+        document.getElementById('uploadPlaceholder').classList.add('hidden');
+        document.getElementById('nextBtn').disabled = false;
+        // Simpan foto untuk dibawa ke halaman berikutnya
+        try { localStorage.setItem('pb_photo', dataUrl); } catch (err) {}
+      }
+      reader.readAsDataURL(file);
+    }
+
+    function goToStyle() {
+      if (!localStorage.getItem('pb_photo')) { alert("Pilih foto dulu sebelum lanjut."); return; }
+      window.location.href = "style.html";
     }
   </script>
 </body>
 </html>
-EOF

@@ -6,6 +6,7 @@
   <title>Gallery - Admin Imagine Photobooth</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="../js/store.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
     @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
@@ -67,114 +68,163 @@
         <p class="text-xs text-slate-400">Riwayat foto pengunjung event dan manajemen aksi instan</p>
       </div>
       <div class="flex gap-2">
-        <button onclick="alert('Mengunduh Seluruh Foto Event (ZIP)...')" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-emerald-600/30">
+        <button onclick="downloadAll()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-emerald-600/30">
           <i data-lucide="download" class="w-4 h-4"></i> Download All (ZIP)
         </button>
       </div>
     </header>
 
     <main class="p-8 space-y-6">
-      <div class="grid grid-cols-2 md:grid-cols-5 gap-5">
-        
-        <div class="aspect-[9/16] rounded-2xl bg-slate-900 border border-white/15 overflow-hidden relative group shadow-xl">
-          <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
-          
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-3 flex flex-col justify-between">
-            
-            <div class="flex justify-between items-center">
-              <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-600/80 text-white border border-indigo-400/30">
-                #Session-128
-              </span>
-            </div>
-
-            <div class="space-y-2">
-              <p class="text-[10px] font-bold text-white truncate">Cyberpunk 2077</p>
-              
-              <div class="flex items-center justify-between bg-black/60 backdrop-blur-md p-1.5 rounded-xl border border-white/15">
-                <button onclick="alert('Pratinjau Foto #Session-128')" class="p-1.5 rounded-lg hover:bg-white/20 text-slate-200 hover:text-white transition" title="Lihat Foto">
-                  <i data-lucide="eye" class="w-4 h-4"></i>
-                </button>
-                <button onclick="alert('Mengunduh Foto #Session-128')" class="p-1.5 rounded-lg hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 transition" title="Download">
-                  <i data-lucide="download" class="w-4 h-4"></i>
-                </button>
-                <button onclick="alert('Menampilkan QR Code Foto #Session-128')" class="p-1.5 rounded-lg hover:bg-indigo-500/30 text-indigo-300 hover:text-indigo-200 transition" title="Tampilkan QR Code">
-                  <i data-lucide="qr-code" class="w-4 h-4"></i>
-                </button>
-                <button onclick="confirm('Hapus foto ini?')" class="p-1.5 rounded-lg hover:bg-rose-500/30 text-rose-400 hover:text-rose-200 transition" title="Hapus Foto">
-                  <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="aspect-[9/16] rounded-2xl bg-slate-900 border border-white/15 overflow-hidden relative group shadow-xl">
-          <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
-          
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-3 flex flex-col justify-between">
-            <div class="flex justify-between items-center">
-              <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-pink-600/80 text-white border border-pink-400/30">
-                #Session-127
-              </span>
-            </div>
-
-            <div class="space-y-2">
-              <p class="text-[10px] font-bold text-white truncate">Anime World</p>
-              <div class="flex items-center justify-between bg-black/60 backdrop-blur-md p-1.5 rounded-xl border border-white/15">
-                <button onclick="alert('Pratinjau Foto #Session-127')" class="p-1.5 rounded-lg hover:bg-white/20 text-slate-200 hover:text-white transition" title="Lihat Foto">
-                  <i data-lucide="eye" class="w-4 h-4"></i>
-                </button>
-                <button onclick="alert('Mengunduh Foto #Session-127')" class="p-1.5 rounded-lg hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 transition" title="Download">
-                  <i data-lucide="download" class="w-4 h-4"></i>
-                </button>
-                <button onclick="alert('Menampilkan QR Code Foto #Session-127')" class="p-1.5 rounded-lg hover:bg-indigo-500/30 text-indigo-300 hover:text-indigo-200 transition" title="Tampilkan QR Code">
-                  <i data-lucide="qr-code" class="w-4 h-4"></i>
-                </button>
-                <button onclick="confirm('Hapus foto ini?')" class="p-1.5 rounded-lg hover:bg-rose-500/30 text-rose-400 hover:text-rose-200 transition" title="Hapus Foto">
-                  <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="aspect-[9/16] rounded-2xl bg-slate-900 border border-white/15 overflow-hidden relative group shadow-xl">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
-          
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-3 flex flex-col justify-between">
-            <div class="flex justify-between items-center">
-              <span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-600/80 text-white border border-amber-400/30">
-                #Session-126
-              </span>
-            </div>
-
-            <div class="space-y-2">
-              <p class="text-[10px] font-bold text-white truncate">Retro 90s Film</p>
-              <div class="flex items-center justify-between bg-black/60 backdrop-blur-md p-1.5 rounded-xl border border-white/15">
-                <button onclick="alert('Pratinjau Foto #Session-126')" class="p-1.5 rounded-lg hover:bg-white/20 text-slate-200 hover:text-white transition" title="Lihat Foto">
-                  <i data-lucide="eye" class="w-4 h-4"></i>
-                </button>
-                <button onclick="alert('Mengunduh Foto #Session-126')" class="p-1.5 rounded-lg hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 transition" title="Download">
-                  <i data-lucide="download" class="w-4 h-4"></i>
-                </button>
-                <button onclick="alert('Menampilkan QR Code Foto #Session-126')" class="p-1.5 rounded-lg hover:bg-indigo-500/30 text-indigo-300 hover:text-indigo-200 transition" title="Tampilkan QR Code">
-                  <i data-lucide="qr-code" class="w-4 h-4"></i>
-                </button>
-                <button onclick="confirm('Hapus foto ini?')" class="p-1.5 rounded-lg hover:bg-rose-500/30 text-rose-400 hover:text-rose-200 transition" title="Hapus Foto">
-                  <i data-lucide="trash-2" class="w-4 h-4"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
+      <p id="galleryEmpty" class="hidden text-center text-sm text-slate-400 py-16 border border-dashed border-white/15 rounded-3xl">Belum ada foto di gallery. Foto yang dihasilkan di kiosk user akan muncul di sini.</p>
+      <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-5 gap-5">
       </div>
     </main>
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+    document.addEventListener("DOMContentLoaded", function() {
+      lucide.createIcons();
+      renderGallery();
+    });
+
+    function renderGallery() {
+      var list = getGallery();
+      var grid = document.getElementById('galleryGrid');
+      var empty = document.getElementById('galleryEmpty');
+
+      if (!list.length) {
+        grid.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+      empty.classList.add('hidden');
+
+      grid.innerHTML = list.map(function (g) {
+        var imgSrc = g.photo && String(g.photo).indexOf('data:') === 0
+          ? g.photo
+          : (g.photo || 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop');
+        return '' +
+          '<div class="aspect-[9/16] rounded-2xl bg-slate-900 border border-white/15 overflow-hidden relative group shadow-xl">' +
+            '<img src="' + imgSrc + '" class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />' +
+            '<div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 p-3 flex flex-col justify-between">' +
+              '<div class="flex justify-between items-center">' +
+                '<span class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-600/80 text-white border border-indigo-400/30">' + esc(g.session || g.id) + '</span>' +
+              '</div>' +
+              '<div class="space-y-2">' +
+                '<p class="text-[10px] font-bold text-white truncate">' + esc(g.theme || 'Foto') + '</p>' +
+                '<div class="flex items-center justify-between bg-black/60 backdrop-blur-md p-1.5 rounded-xl border border-white/15">' +
+                  '<button onclick="previewPhoto(\'' + g.id + '\')" class="p-1.5 rounded-lg hover:bg-white/20 text-slate-200 hover:text-white transition" title="Lihat Foto"><i data-lucide="eye" class="w-4 h-4"></i></button>' +
+                  '<button onclick="downloadPhoto(\'' + g.id + '\')" class="p-1.5 rounded-lg hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 transition" title="Download"><i data-lucide="download" class="w-4 h-4"></i></button>' +
+                  '<button onclick="showQR(\'' + g.id + '\')" class="p-1.5 rounded-lg hover:bg-indigo-500/30 text-indigo-300 hover:text-indigo-200 transition" title="QR Code"><i data-lucide="qr-code" class="w-4 h-4"></i></button>' +
+                  '<button onclick="deletePhoto(\'' + g.id + '\')" class="p-1.5 rounded-lg hover:bg-rose-500/30 text-rose-400 hover:text-rose-200 transition" title="Hapus Foto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function findPhoto(id) {
+      return getGallery().find(function (g) { return g.id === String(id); }) || null;
+    }
+    function galleryImgSrc(g) {
+      if (!g) return 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop';
+      return g.photo && String(g.photo).indexOf('data:') === 0 ? g.photo : (g.photo || 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop');
+    }
+
+    function previewPhoto(id) {
+      var g = findPhoto(id);
+      if (!g) return;
+      var existing = document.getElementById('photoModal');
+      if (existing) existing.remove();
+      var modal = document.createElement('div');
+      modal.id = 'photoModal';
+      modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-6';
+      modal.innerHTML =
+        '<div class="relative w-full max-w-[320px]">' +
+          '<button onclick="closePhotoModal()" class="absolute -top-12 right-0 text-white/70 hover:text-white"><i data-lucide="x" class="w-7 h-7"></i></button>' +
+          '<div class="space-y-3">' +
+            '<div class="aspect-[9/16] rounded-3xl overflow-hidden border-2 border-indigo-500/50 shadow-2xl bg-slate-900">' +
+              '<img src="' + galleryImgSrc(g) + '" class="w-full h-full object-cover" alt="' + esc(g.theme || '') + '" />' +
+            '</div>' +
+            '<div class="text-center"><p class="font-bold text-white">' + esc(g.session || g.id) + '</p><p class="text-[11px] font-mono text-slate-400">' + esc(g.theme || 'Foto') + '</p></div>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(modal);
+      lucide.createIcons();
+    }
+    function closePhotoModal() { var m = document.getElementById('photoModal'); if (m) m.remove(); }
+
+    function downloadPhoto(id) {
+      var g = findPhoto(id);
+      if (!g) return;
+      var src = galleryImgSrc(g);
+      var a = document.createElement('a');
+      a.href = src;
+      a.target = String(src).indexOf('data:') === 0 ? '_self' : '_blank';
+      a.download = (g.session || g.id) + '.jpg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('Mengunduh ' + (g.session || g.id), 'success');
+    }
+
+    function downloadAll() {
+      var list = getGallery().filter(function (g) { return g.photo && String(g.photo).indexOf('data:') === 0; });
+      if (!list.length) { showToast('Belum ada foto yang bisa diunduh', 'info'); return; }
+      list.forEach(function (g, i) {
+        var a = document.createElement('a');
+        a.href = g.photo;
+        a.download = (g.session || 'foto-' + i) + '.jpg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+      showToast(list.length + ' foto mulai diunduh', 'success');
+    }
+
+    function showQR(id) {
+      var g = findPhoto(id);
+      if (!g) return;
+      var existing = document.getElementById('qrModal');
+      if (existing) existing.remove();
+      var url = 'https://www.instagram.com/ardaeko';
+      var modal = document.createElement('div');
+      modal.id = 'qrModal';
+      modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-6';
+      modal.innerHTML =
+        '<div class="relative w-full max-w-[300px] text-center space-y-3 bg-slate-900 rounded-3xl p-6 border border-white/10">' +
+          '<button onclick="closeQRModal()" class="absolute top-3 right-3 text-white/60 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>' +
+          '<p class="text-xs font-mono text-indigo-300 font-bold">QR CODE</p>' +
+          '<p class="text-sm font-bold text-white truncate">' + esc(g.session || g.id) + '</p>' +
+          '<div class="w-44 h-44 mx-auto p-3 rounded-2xl bg-white flex items-center justify-center shadow-xl">' +
+            '<img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=' + encodeURIComponent(url) + '" class="w-full h-full object-contain" />' +
+          '</div>' +
+          '<p class="text-[10px] text-slate-400 break-all">' + url + '</p>' +
+        '</div>';
+      document.body.appendChild(modal);
+      lucide.createIcons();
+    }
+    function closeQRModal() { var m = document.getElementById('qrModal'); if (m) m.remove(); }
+
+    function deletePhoto(id) {
+      var g = findPhoto(id);
+      if (!g) return;
+      if (!confirm('Hapus foto ini?')) return;
+      removeFromGallery(id);
+      renderGallery();
+      closePhotoModal();
+      closeQRModal();
+      showToast('Foto dihapus', 'success');
+    }
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
   </script>
 </body>
 </html>

@@ -3,129 +3,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Webcam Mode - Imagine Photobooth AI</title>
+  <title>Live Webcam - Imagine Photobooth AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../js/store.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
-    .mirror { transform: scaleX(-1); }
-
-    /* Animasi Aurora Cyan */
-    @keyframes auroraRotate {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.3); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-    .aurora-bg {
-      position: absolute;
-      width: 180%;
-      height: 180%;
-      top: -40%;
-      left: -40%;
-      background: conic-gradient(
-        from 0deg at 50% 50%,
-        #06b6d4 0deg,
-        #10b981 100deg,
-        #3b82f6 200deg,
-        #0284c7 280deg,
-        #06b6d4 360deg
-      );
-      filter: blur(60px);
-      animation: auroraRotate 14s linear infinite;
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: 0.8;
+    @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
+    .aurora {
+      position: absolute; width: 180%; height: 180%; top: -40%; left: -40%;
+      background: conic-gradient(from 0deg at 50% 50%, #4f46e5 0deg, #7c3aed 90deg, #db2777 180deg, #0284c7 270deg, #4f46e5 360deg);
+      filter: blur(90px); animation: auroraRotate 25s linear infinite; border-radius: 50%; pointer-events: none; opacity: 0.5;
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+<body class="min-h-screen text-slate-100 flex flex-col justify-between p-4 md:p-8 relative overflow-x-hidden select-none">
+  <div class="aurora"></div>
 
-  <div class="w-full max-w-sm md:max-w-4xl h-[844px] md:h-[650px] bg-slate-950/60 text-white flex flex-col justify-between items-center p-6 md:p-10 relative overflow-hidden rounded-[40px] border border-white/20 shadow-2xl backdrop-blur-3xl transition-all duration-500">
-    
-    <!-- Background Aurora -->
-    <div class="aurora-bg"></div>
+  <header class="w-full max-w-4xl mx-auto flex justify-between items-center z-10">
+    <a href="index.html" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold border border-white/15 transition">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali
+    </a>
+    <span class="font-bold text-sm text-white">Live Webcam Mode</span>
+  </header>
 
-    <header class="w-full flex justify-between items-center z-10 pt-2">
-      <a href="index.html" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-slate-300 transition">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-      </a>
-      <span class="text-xs font-mono text-cyan-300 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30">
-        WEBCAM MODE
-      </span>
-    </header>
-
-    <main class="w-full my-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 z-10">
-      <div class="relative w-full md:w-[380px] aspect-[3/4] bg-slate-900 rounded-3xl overflow-hidden border border-white/20 shadow-2xl flex items-center justify-center">
-        <video id="webcamVideo" autoplay playsinline muted class="w-full h-full object-cover mirror"></video>
-        
-        <div id="errorBox" class="hidden absolute inset-0 bg-slate-950/90 p-6 flex flex-col items-center justify-center text-center space-y-3 z-20">
-          <div class="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl">⚠️</div>
-          <p id="errorText" class="text-xs text-slate-300 leading-relaxed">Gagal mengakses kamera.</p>
-          <button onclick="initCamera()" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold border border-white/15">
-            Coba Lagi
-          </button>
-        </div>
-
-        <div class="absolute inset-0 border-2 border-cyan-400/40 rounded-3xl pointer-events-none"></div>
-        <div id="countdown" class="hidden absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center text-7xl font-black text-white">3</div>
+  <main class="w-full max-w-sm mx-auto z-10 my-auto text-center space-y-5">
+    <div id="previewBox" class="relative w-full max-w-[260px] md:max-w-[300px] h-[52vh] max-h-[440px] min-h-[280px] mx-auto rounded-3xl bg-slate-900 border-2 border-indigo-500/40 overflow-hidden shadow-2xl flex items-center justify-center">
+      <!-- Video webcam live -->
+      <video id="video" autoplay playsinline muted class="w-full h-full object-cover"></video>
+      <div id="noCamera" class="absolute inset-0 hidden flex-col items-center justify-center space-y-2 bg-slate-900">
+        <i data-lucide="video-off" class="w-8 h-8 text-slate-500"></i>
+        <p class="text-[11px] text-slate-400 px-6">Kamera tidak tersedia. Gunakan Upload Foto di menu utama.</p>
       </div>
-
-      <div class="flex flex-col items-center space-y-4">
-        <p class="hidden md:block text-xs font-mono text-slate-300">Posisikan wajah di tengah area kamera</p>
-        <button id="captureBtn" onclick="startCapture()" class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-cyan-500 hover:bg-cyan-400 border-4 border-white/30 flex items-center justify-center shadow-lg shadow-cyan-500/50 active:scale-90 transition-all">
-          <div class="w-6 h-6 md:w-8 md:h-8 rounded-full bg-white"></div>
-        </button>
+      <div id="countdownOverlay" class="absolute inset-0 hidden items-center justify-center bg-slate-950/90">
+        <span id="countdownNum" class="text-8xl font-black text-white drop-shadow-lg"></span>
+        <p id="countdownHint" class="absolute bottom-8 text-xs font-mono text-slate-400">Siap... lihat ke kamera!</p>
       </div>
-    </main>
+      <div id="liveBadge" class="absolute top-4 right-4 flex items-center gap-2 bg-black/60 px-3 py-1 rounded-full border border-white/10 text-[10px] font-mono text-emerald-400">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> LIVE
+      </div>
+    </div>
 
-    <footer class="w-full py-3 text-center z-10 border-t border-white/10">
-      <p class="text-[11px] text-slate-300">
-        Imagine Photobooth Ai v1.0 | Develope by <a href="https://www.instagram.com/ardaeko/" target="_blank" class="text-white font-semibold">@ardaeko</a>
-      </p>
-    </footer>
-  </div>
+    <div class="space-y-3">
+      <a href="index.html" id="retakeBtn" class="hidden w-full py-3.5 px-6 rounded-2xl bg-white/10 hover:bg-white/20 font-bold text-sm flex items-center justify-center gap-2 border border-white/15 transition"> Ulangi Foto</a>
+
+      <button id="captureBtn" onclick="takePhoto()" disabled class="w-full py-3.5 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/30 transition">
+        <i data-lucide="camera" class="w-4 h-4"></i>
+        <span>Ambil Foto</span>
+      </button>
+
+      <button id="nextBtn" onclick="goToStyle()" disabled class="w-full py-3.5 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30 transition">
+        <span>Lanjut Pilih Gaya AI</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </main>
+
+  <footer class="w-full max-w-4xl mx-auto text-center z-10 border-t border-white/10 pt-4">
+    <p class="text-xs text-slate-400">LuxaryMedia_AiProject @ardaeko</p>
+  </footer>
 
   <script>
-    const video = document.getElementById('webcamVideo');
-    const errorBox = document.getElementById('errorBox');
-    const errorText = document.getElementById('errorText');
+    document.addEventListener("DOMContentLoaded", function() {
+      lucide.createIcons();
+      initWebcam();
+    });
 
-    async function initCamera() {
-      errorBox.classList.add('hidden');
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        showError("Browser tidak mendukung WebRTC camera.");
-        return;
-      }
+    let stream = null;
+    const video = document.getElementById('video');
+
+    async function initWebcam() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } },
+          audio: false
+        });
         video.srcObject = stream;
         await video.play();
+        document.getElementById('captureBtn').disabled = false;
       } catch (err) {
-        showError("Akses kamera ditolak atau tidak ditemukan.");
+        document.getElementById('noCamera').classList.remove('hidden');
+        document.getElementById('noCamera').classList.add('flex');
+        document.getElementById('liveBadge').classList.add('hidden');
+        console.warn('Webcam tidak bisa diakses:', err);
       }
     }
 
-    function showError(msg) {
-      errorText.innerText = msg;
-      errorBox.classList.remove('hidden');
-    }
+    function takePhoto() {
+      if (!video || !video.videoWidth) return;
+      if (document.getElementById('captureBtn').disabled) return;
 
-    function startCapture() {
-      const countdownEl = document.getElementById('countdown');
-      countdownEl.classList.remove('hidden');
-      let count = 3;
-      countdownEl.innerText = count;
-      const timer = setInterval(() => {
-        count--;
-        if (count > 0) { countdownEl.innerText = count; } 
-        else {
+      var seconds = getHardware().countdown || 5;
+      var overlay = document.getElementById('countdownOverlay');
+      var num = document.getElementById('countdownNum');
+      var hint = document.getElementById('countdownHint');
+
+      // Nonaktifkan tombol selama hitung mundur
+      document.getElementById('captureBtn').disabled = true;
+      document.getElementById('captureBtn').querySelector('span').textContent = 'Menghitung...';
+
+      // Siapkan flash/overlay
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+      num.textContent = String(seconds);
+      hint.textContent = 'Siap... lihat ke kamera! (flash off)';
+
+      var remaining = seconds;
+      var timer = setInterval(function () {
+        remaining -= 1;
+        if (remaining > 0) {
+          num.textContent = String(remaining);
+          hint.textContent = remaining <= 2 ? 'Senyum!' : 'Pose!';
+        } else {
           clearInterval(timer);
-          countdownEl.innerText = "📸";
-          setTimeout(() => { alert("Foto berhasil diambil!"); countdownEl.classList.add('hidden'); }, 500);
+          num.textContent = '📸';
+          hint.textContent = 'Cheese!';
+          overlay.classList.add('hidden');
+          overlay.classList.remove('flex');
+          actualCapture();
         }
       }, 1000);
     }
 
-    window.addEventListener('DOMContentLoaded', initCamera);
+    function actualCapture() {
+      // Gambar dari frame video dalam orientasi portrait
+      const canvas = document.createElement('canvas');
+      const ratio = 9 / 16;
+      let w = video.videoWidth;
+      let h = Math.round(w * ratio);
+      if (h > video.videoHeight) { h = video.videoHeight; w = Math.round(h / ratio); }
+
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      const sx = (video.videoWidth - w) / 2;
+      const sy = (video.videoHeight - h) / 2;
+      ctx.drawImage(video, sx, sy, w, h, 0, 0, w, h);
+
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      try { localStorage.setItem('pb_photo', dataUrl); } catch (err) {}
+
+      // Stop kamera & tampilkan hasil + tombol lanjut
+      if (stream) { stream.getTracks().forEach(t => t.stop()); }
+      video.pause();
+      video.classList.add('hidden');
+      document.getElementById('liveBadge').classList.add('hidden');
+      document.getElementById('noCamera').classList.add('hidden');
+
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      img.className = 'w-full h-full object-cover';
+      img.alt = 'Foto webcam';
+      document.getElementById('previewBox').appendChild(img);
+
+      document.getElementById('captureBtn').disabled = true;
+      document.getElementById('retakeBtn').classList.add('flex');
+      document.getElementById('nextBtn').disabled = false;
+      document.getElementById('captureBtn').querySelector('span').textContent = 'Foto Tersimpan ✓';
+    }
+
+    function goToStyle() {
+      if (!localStorage.getItem('pb_photo')) { alert('Ambil foto dulu sebelum lanjut.'); return; }
+      window.location.href = 'style.html';
+    }
+
+    // Lepaskan kamera saat meninggalkan halaman (termasuk "Kembali" / bfcache)
+    // agar perangkat kamera tidak terkunci dan tab tidak macet jadi blank putih.
+    function stopStream() {
+      if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    }
+    window.addEventListener('pagehide', stopStream);
+    window.addEventListener('beforeunload', stopStream);
   </script>
 </body>
 </html>

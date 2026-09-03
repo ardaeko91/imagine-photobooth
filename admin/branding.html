@@ -6,6 +6,7 @@
   <title>Branding & Overlay - Admin Imagine Photobooth</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="../js/store.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
     @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
@@ -66,7 +67,7 @@
         <h2 class="text-xl font-bold text-white">Branding & Overlay Watermark</h2>
         <p class="text-xs text-slate-400">Atur bingkai event, logo sponsor, dan watermark brand</p>
       </div>
-      <button onclick="alert('Branding Disimpan!')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
+      <button onclick="saveBrandingHandler()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
         <i data-lucide="save" class="w-4 h-4"></i> Simpan Branding
       </button>
     </header>
@@ -82,11 +83,11 @@
             <div class="grid grid-cols-2 gap-4 text-xs">
               <div>
                 <label class="text-slate-300 font-semibold block mb-1.5">NAMA BRAND / EVENT</label>
-                <input type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-bold" value="LuxaryMedia_AiProject" />
+                <input id="brandName" type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-bold" value="LuxaryMedia_AiProject" />
               </div>
               <div>
                 <label class="text-slate-300 font-semibold block mb-1.5">INSTAGRAM HANDLE</label>
-                <input type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-bold" value="@ardaeko" />
+                <input id="igHandle" type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-bold" value="@ardaeko" />
               </div>
             </div>
           </div>
@@ -96,10 +97,10 @@
               <i data-lucide="layers" class="w-4 h-4 text-indigo-400"></i> Upload Frame Event PNG
             </h3>
             <div onclick="document.getElementById('frameInput').click()" class="w-full py-8 rounded-2xl border-2 border-dashed border-white/20 hover:border-indigo-400 bg-black/30 transition cursor-pointer flex flex-col items-center justify-center space-y-2 text-center">
-              <i data-lucide="upload-cloud" class="w-8 h-8 text-indigo-400"></i>
-              <p class="text-xs font-semibold text-slate-200">Klik untuk upload file PNG Overlay (Rasio 9:16)</p>
-              <input type="file" id="frameInput" accept="image/png" class="hidden" />
-            </div>
+                <i data-lucide="upload-cloud" class="w-8 h-8 text-indigo-400"></i>
+                <p id="frameHint" class="text-xs font-semibold text-slate-200">Klik untuk upload file PNG Overlay (Rasio 9:16)</p>
+                <input type="file" id="frameInput" accept="image/png" class="hidden" onchange="handleFrameUpload(this)" />
+              </div>
           </div>
         </div>
 
@@ -107,9 +108,10 @@
           <h3 class="text-xs font-bold text-slate-300 self-start">LIVE PREVIEW OVERLAY</h3>
           <div class="relative w-[200px] aspect-[9/16] rounded-3xl bg-slate-900 border-2 border-indigo-500/50 overflow-hidden shadow-2xl">
             <img src="https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop" class="w-full h-full object-cover" />
+            <img id="framePreview" class="absolute inset-0 w-full h-full object-cover hidden pointer-events-none" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent p-4 flex flex-col justify-end text-center">
-              <p class="text-[10px] font-mono text-indigo-300 font-bold">DEVELOPED BY @ardaeko</p>
-              <p class="text-[9px] text-slate-300">LuxaryMedia_AiProject</p>
+              <p id="previewIg" class="text-[10px] font-mono text-indigo-300 font-bold">DEVELOPED BY @ardaeko</p>
+              <p id="previewBrand" class="text-[9px] text-slate-300">LuxaryMedia_AiProject</p>
             </div>
           </div>
         </div>
@@ -119,7 +121,73 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+    document.addEventListener("DOMContentLoaded", function() {
+      lucide.createIcons();
+      loadBranding();
+      livePreview();
+    });
+
+    function loadBranding() {
+      var b = getBranding();
+      document.getElementById('brandName').value = b.brandName || '';
+      document.getElementById('igHandle').value = b.igHandle || '';
+      if (b.frameDataUrl) {
+        var fp = document.getElementById('framePreview');
+        fp.src = b.frameDataUrl;
+        fp.classList.remove('hidden');
+        document.getElementById('frameHint').textContent = 'Frame terpasang ✓ (klik untuk ganti)';
+      }
+      refreshPreview();
+    }
+
+    // Update preview live saat input berubah
+    function livePreview() {
+      document.getElementById('brandName').addEventListener('input', refreshPreview);
+      document.getElementById('igHandle').addEventListener('input', refreshPreview);
+    }
+
+    function refreshPreview() {
+      var brand = document.getElementById('brandName').value.trim() || 'Imagine Photobooth AI';
+      var ig = document.getElementById('igHandle').value.trim() || '';
+      document.getElementById('previewBrand').textContent = brand;
+      document.getElementById('previewIg').textContent = 'DEVELOPED BY ' + (ig || '@ardaeko');
+    }
+
+    function handleFrameUpload(input) {
+      var file = input.files && input.files[0];
+      if (!file) return;
+      if (file.type !== 'image/png') {
+        showToast('Hanya file PNG yang diperbolehkan', 'error');
+        input.value = '';
+        return;
+      }
+      if (file.size > 6 * 1024 * 1024) {
+        showToast('Ukuran PNG maksimal 6MB', 'error');
+        input.value = '';
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        var fp = document.getElementById('framePreview');
+        fp.src = e.target.result;
+        fp.classList.remove('hidden');
+        document.getElementById('frameHint').textContent = file.name + ' ✓ (klik untuk ganti)';
+        showToast('Frame PNG siap dipakai', 'success');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveBrandingHandler() {
+      var fp = document.getElementById('framePreview');
+      var data = {
+        brandName: document.getElementById('brandName').value.trim() || 'Imagine Photobooth AI',
+        igHandle: document.getElementById('igHandle').value.trim() || '@ardaeko',
+        frameDataUrl: fp.classList.contains('hidden') ? null : fp.src
+      };
+      saveBranding(data);
+      showToast('Branding disimpan ✓ (frame: ' + (data.frameDataUrl ? 'aktif' : 'tanpa frame') + ')', 'success');
+      refreshPreview();
+    }
   </script>
 </body>
 </html>

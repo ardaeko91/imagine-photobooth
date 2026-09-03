@@ -1,4 +1,3 @@
-cat << 'EOF' > camera.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,82 +5,69 @@ cat << 'EOF' > camera.html
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DSLR Camera Mode - Imagine Photobooth AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
-
-    /* Animasi Aurora Amber & Gold */
-    @keyframes auroraRotate {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.3); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-    .aurora-bg {
-      position: absolute;
-      width: 180%;
-      height: 180%;
-      top: -40%;
-      left: -40%;
-      background: conic-gradient(
-        from 0deg at 50% 50%,
-        #d97706 0deg,
-        #f59e0b 100deg,
-        #7c3aed 200deg,
-        #b45309 280deg,
-        #d97706 360deg
-      );
-      filter: blur(60px);
-      animation: auroraRotate 14s linear infinite;
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: 0.85;
+    @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
+    .aurora {
+      position: absolute; width: 180%; height: 180%; top: -40%; left: -40%;
+      background: conic-gradient(from 0deg at 50% 50%, #4f46e5 0deg, #7c3aed 90deg, #db2777 180deg, #0284c7 270deg, #4f46e5 360deg);
+      filter: blur(90px); animation: auroraRotate 25s linear infinite; border-radius: 50%; pointer-events: none; opacity: 0.5;
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
+<body class="min-h-screen text-slate-100 flex flex-col justify-between p-4 md:p-8 relative overflow-x-hidden select-none">
+  <div class="aurora"></div>
 
-  <div class="w-full max-w-sm md:max-w-4xl h-[844px] md:h-[650px] bg-slate-950/60 text-white flex flex-col justify-between items-center p-6 md:p-10 relative overflow-hidden rounded-[40px] border border-white/20 shadow-2xl backdrop-blur-3xl transition-all duration-500">
-    
-    <!-- Background Aurora -->
-    <div class="aurora-bg"></div>
+  <header class="w-full max-w-4xl mx-auto flex justify-between items-center z-10">
+    <a href="index.html" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-semibold border border-white/15 transition">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali
+    </a>
+    <span class="font-bold text-sm text-white">DSLR Tethering Mode</span>
+  </header>
 
-    <header class="w-full flex justify-between items-center z-10 pt-2">
-      <a href="index.html" class="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-slate-300 transition">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-      </a>
-      <span class="text-xs font-mono text-amber-300 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/30">
-        DSLR MODE
-      </span>
-    </header>
-
-    <main class="w-full my-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-12 z-10 text-center md:text-left">
-      
-      <!-- DSLR Preview Container -->
-      <div class="w-full md:w-[380px] aspect-[3/4] bg-slate-900/50 rounded-3xl border border-white/20 flex flex-col items-center justify-center p-6 space-y-4 shadow-2xl backdrop-blur-md">
-        <div class="w-20 h-20 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
-          <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.039l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0c-.693.037-1.332.42-1.736 1.039l-.821 1.316z" /></svg>
-        </div>
-        <div class="text-center">
-          <h3 class="text-base font-bold text-white">Hubungkan Kamera DSLR</h3>
-          <p class="text-xs text-slate-300 mt-1">Gunakan kabel USB / Wi-Fi tethering untuk mengambil foto dari kamera profesional.</p>
-        </div>
+  <main class="w-full max-w-sm mx-auto z-10 my-auto text-center space-y-5">
+    <div id="previewBox" class="relative w-full max-w-[260px] md:max-w-[300px] h-[52vh] max-h-[440px] min-h-[280px] mx-auto rounded-3xl bg-slate-900 border-2 border-pink-500/40 overflow-hidden shadow-2xl flex items-center justify-center">
+      <img id="dslrImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop" class="w-full h-full object-cover" />
+      <div class="absolute top-4 right-4 flex items-center gap-2 bg-black/60 px-3 py-1 rounded-full border border-white/10 text-[10px] font-mono text-pink-400">
+        <span>DSLR CONNECTED</span>
       </div>
+    </div>
 
-      <!-- Action Button -->
-      <div class="w-full md:w-80 flex flex-col space-y-4">
-        <button onclick="alert('Mencari perangkat DSLR terhubung...')" class="w-full py-4 rounded-2xl bg-amber-600 hover:bg-amber-500 font-bold text-sm tracking-wide transition shadow-lg shadow-amber-500/40">
-          HUBUNGKAN PERANGKAT 📷
-        </button>
-      </div>
+    <div class="space-y-3 w-full max-w-[300px] mx-auto">
+      <button id="captureBtn" onclick="captureDslr()" class="w-full py-3.5 px-6 rounded-2xl bg-pink-600 hover:bg-pink-500 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-pink-600/30 transition">
+        <i data-lucide="aperture" class="w-4 h-4"></i>
+        <span id="captureLabel">Jepret Kamera DSLR</span>
+      </button>
 
-    </main>
+      <button id="nextBtn" onclick="goToStyle()" disabled class="w-full py-3.5 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30 transition">
+        <span>Lanjut Pilih Gaya AI</span>
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </main>
 
-    <footer class="w-full py-3 text-center z-10 border-t border-white/10">
-      <p class="text-[11px] text-slate-300">
-        Imagine Photobooth Ai v1.0 | Develope by <a href="https://www.instagram.com/ardaeko/" target="_blank" class="text-white font-semibold">@ardaeko</a>
-      </p>
-    </footer>
-  </div>
+  <footer class="w-full max-w-4xl mx-auto text-center z-10 border-t border-white/10 pt-4">
+    <p class="text-xs text-slate-400">LuxaryMedia_AiProject @ardaeko</p>
+  </footer>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+
+    // Mode DSLR tether membutuhkan backend (gphoto2 / capture card).
+    // Untuk sekarang, alur disimulasikan memakai foto contoh agar aliran halaman nyambung.
+    function captureDslr() {
+      const src = document.getElementById('dslrImg').src;
+      localStorage.setItem('pb_photo', src);
+      document.getElementById('captureLabel').textContent = 'Foto Tersimpan ✓';
+      document.getElementById('captureBtn').disabled = true;
+      document.getElementById('nextBtn').disabled = false;
+    }
+
+    function goToStyle() {
+      if (!localStorage.getItem('pb_photo')) { alert('Jepret foto dulu sebelum lanjut.'); return; }
+      window.location.href = 'style.html';
+    }
+  </script>
 </body>
 </html>
-EOF

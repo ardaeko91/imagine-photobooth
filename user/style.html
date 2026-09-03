@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pilih Style AI - Imagine Photobooth AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="../js/store.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
 
@@ -56,12 +57,12 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 md:p-8 select-none">
+<body class="h-screen text-slate-100 flex flex-col justify-between p-6 md:p-8 relative overflow-hidden select-none">
 
-  <div class="w-full max-w-sm md:max-w-5xl h-[844px] md:h-[680px] bg-slate-950/60 text-white flex flex-col justify-between items-center p-6 md:p-8 relative overflow-hidden rounded-[40px] border border-white/20 shadow-2xl backdrop-blur-3xl transition-all duration-500">
-    
-    <!-- Background Aurora -->
-    <div class="aurora-bg"></div>
+  <!-- Background Aurora penuh viewport -->
+  <div class="aurora-bg"></div>
+
+  <div class="w-full max-w-5xl mx-auto flex flex-col justify-between items-center relative z-10 flex-1">
 
     <!-- Header -->
     <header class="w-full flex justify-between items-center z-10 pt-2">
@@ -203,7 +204,7 @@
       </div>
 
       <!-- Action Button -->
-      <button id="generateBtn" disabled onclick="alert('Memulai proses AI Generation...')" class="w-full md:w-80 py-4 rounded-2xl bg-indigo-600 disabled:opacity-40 hover:bg-indigo-500 font-bold text-sm tracking-wide transition shadow-lg shadow-indigo-500/40">
+      <button id="generateBtn" disabled onclick="generatePhoto()" class="w-full md:w-80 py-4 rounded-2xl bg-indigo-600 disabled:opacity-40 hover:bg-indigo-500 font-bold text-sm tracking-wide transition shadow-lg shadow-indigo-500/40">
         GENERATE FOTO AI ✨
       </button>
 
@@ -261,6 +262,41 @@
       slider.scrollLeft = scrollLeft - walk;
     });
 
+    let selectedThemeName = null;
+
+    // Render pilihan gaya langsung dari pb_presets (diatur admin)
+    renderThemes();
+
+    function pad2(n) { return String(n).padStart(2, '0'); }
+
+    function escAttr(s) { return String(s == null ? '' : s).replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+    function escHtml(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function renderThemes() {
+      getPresets(); // seed
+      const list = getPresets().filter(function (p) { return p.active; });
+      const track = document.getElementById('carouselTrack');
+      if (!list.length) {
+        track.innerHTML = '<p class="text-sm text-slate-400 px-4 py-10">Belum ada gaya aktif. Kelola lewat panel admin.</p>';
+        return;
+      }
+      track.innerHTML = list.map(function (p, i) {
+        const img = p.image || 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=600&auto=format&fit=crop';
+        return '' +
+          '<div onclick="selectTheme(this, \'' + escAttr(p.name) + '\')" class="theme-card shrink-0 w-[170px] md:w-[210px] aspect-[9/16] rounded-3xl bg-slate-900/80 border-2 border-white/15 hover:border-indigo-400 relative overflow-hidden cursor-pointer transition-all duration-300 shadow-2xl group/card">' +
+            '<img src="' + img + '" alt="' + escAttr(p.name) + '" class="w-full h-full object-cover transition duration-500 group-hover/card:scale-105 pointer-events-none" />' +
+            '<div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent p-4 flex flex-col justify-end text-left pointer-events-none">' +
+              '<span class="text-[10px] font-mono text-indigo-300 uppercase tracking-widest">STYLE ' + pad2(i + 1) + '</span>' +
+              '<h3 class="text-sm font-bold text-white">' + escHtml(p.name) + '</h3>' +
+            '</div>' +
+            '<div class="check-icon hidden absolute top-3 right-3 w-7 h-7 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold shadow-lg pointer-events-none">✓</div>' +
+          '</div>';
+      }).join('');
+    }
+
     function selectTheme(cardElement, themeName) {
       document.querySelectorAll('.theme-card').forEach(card => {
         card.classList.remove('border-indigo-400', 'ring-4', 'ring-indigo-500/40', 'scale-105');
@@ -272,7 +308,25 @@
       cardElement.classList.add('border-indigo-400', 'ring-4', 'ring-indigo-500/40', 'scale-105');
       cardElement.querySelector('.check-icon').classList.remove('hidden');
 
+      selectedThemeName = themeName;
       document.getElementById('generateBtn').disabled = false;
+    }
+
+    function generatePhoto() {
+      if (!localStorage.getItem('pb_photo')) {
+        alert('Foto belum ada. Silakan ambil foto dulu.');
+        window.location.href = 'index.html';
+        return;
+      }
+      if (!selectedThemeName) {
+        alert('Pilih salah satu gaya terlebih dahulu.');
+        return;
+      }
+      localStorage.setItem('pb_theme', selectedThemeName);
+      const btn = document.getElementById('generateBtn');
+      btn.disabled = true;
+      btn.textContent = 'MEMPROSES... ✨';
+      window.location.href = 'process.html';
     }
   </script>
 </body>

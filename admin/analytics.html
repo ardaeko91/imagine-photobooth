@@ -6,6 +6,7 @@
   <title>Analytics - Admin Imagine Photobooth</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="../js/store.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
     @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
@@ -66,7 +67,7 @@
         <h2 class="text-xl font-bold text-white">Analytics & API Token Key</h2>
         <p class="text-xs text-slate-400">Statistik penggunaan kuota AI dan konfigurasi API Key</p>
       </div>
-      <button onclick="alert('API Key Disimpan!')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
+      <button onclick="saveApiKeyHandler()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
         <i data-lucide="key" class="w-4 h-4"></i> Simpan API Key
       </button>
     </header>
@@ -79,7 +80,13 @@
         <div class="space-y-3 text-xs">
           <div>
             <label class="text-slate-300 font-semibold block mb-1.5">REPLICATE / GROQ API KEY</label>
-            <input type="password" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono" value="r8_abcdef1234567890987654321" />
+            <input id="apiKeyInput" type="password" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono" value="r8_abcdef1234567890987654321" />
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="verifyApiKey()" class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 font-bold text-xs flex items-center gap-2 transition">
+              <i data-lucide="shield-check" class="w-4 h-4"></i> Verifikasi Key
+            </button>
+            <span id="apiStatus" class="text-[11px] font-mono text-slate-400">Belum diverifikasi</span>
           </div>
         </div>
       </div>
@@ -87,7 +94,40 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() { lucide.createIcons(); });
+    document.addEventListener("DOMContentLoaded", function() {
+      lucide.createIcons();
+      // Isi input dengan key yang sudah disimpan
+      var saved = getApiKey();
+      if (saved) document.getElementById('apiKeyInput').value = saved;
+    });
+
+    function saveApiKeyHandler() {
+      var key = document.getElementById('apiKeyInput').value.trim();
+      if (!key) { showToast('API key tidak boleh kosong', 'error'); return; }
+      saveApiKey(key);
+      showToast('API Key disimpan ✓', 'success');
+    }
+
+    function verifyApiKey() {
+      var key = document.getElementById('apiKeyInput').value.trim();
+      var status = document.getElementById('apiStatus');
+      if (!key) {
+        status.textContent = 'Masukkan key dulu';
+        status.className = 'text-[11px] font-mono text-rose-400';
+        return;
+      }
+      // Simulasi verifikasi (tidak ada backend); pola key vektor.
+      var looksValid = /^(r8_|gsk_|sk-|AIza)[A-Za-z0-9_\-]{10,}$/.test(key);
+      if (looksValid) {
+        status.textContent = 'Key valid ✓';
+        status.className = 'text-[11px] font-mono text-emerald-400';
+        showToast('API Key terverifikasi', 'success');
+      } else {
+        status.textContent = 'Format key tidak dikenal';
+        status.className = 'text-[11px] font-mono text-amber-400';
+        showToast('Format key tidak dikenal', 'info');
+      }
+    }
   </script>
 </body>
 </html>
