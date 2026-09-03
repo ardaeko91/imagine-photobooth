@@ -89,7 +89,20 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <!-- KOLOM KIRI (7 COLS) -->
-        <div class="lg:col-span-7 space-y-6">
+        <div class="lg:col-span-7 space-y-4">
+
+          <!-- TAB BAR -->
+          <div class="p-1.5 rounded-2xl bg-slate-950/70 border border-white/10 inline-flex gap-1">
+            <button type="button" data-pbtab="tabPrompt" onclick="switchPbTab('tabPrompt')" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30">
+              <i data-lucide="settings-2" class="w-4 h-4"></i> ➊ Prompt &amp; Pengaturan
+            </button>
+            <button type="button" data-pbtab="tabGenerate" onclick="switchPbTab('tabGenerate')" class="px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5">
+              <i data-lucide="images" class="w-4 h-4"></i> ➋ Gambar &amp; Generate
+            </button>
+          </div>
+
+          <!-- TAB 1: PROMPT & PENGATURAN -->
+          <div id="tabPrompt" class="space-y-4">
           <!-- PRESET SETTINGS -->
           <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
             <div>
@@ -177,8 +190,11 @@
               </button>
             </div>
           </div>
+          </div> <!-- /tabPrompt -->
 
-
+          <!-- TAB 2: GAMBAR & GENERATE -->
+          <div id="tabGenerate" class="space-y-4 hidden">
+            <!-- REFERENSI & FOTO TAMU -->
           <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
             <div>
               <h3 class="text-xs font-bold text-white flex items-center gap-2">
@@ -222,6 +238,7 @@
               <i data-lucide="play" class="w-4 h-4 fill-current"></i> <span>RUN TEST GENERATE</span>
             </button>
           </div>
+          </div> <!-- /tabGenerate -->
         </div>
 
         <!-- KOLOM KANAN (5 COLS) -->
@@ -287,6 +304,23 @@
     function onPromptModelChange(val) {
       if (val) saveActivePromptModel(val);
       showToast('Model prompt: ' + val, 'info');
+    }
+
+    // Ganti tab kolom kiri (Prompt & Pengaturan / Gambar & Generate)
+    function switchPbTab(name) {
+      var tab1 = document.getElementById('tabPrompt');
+      var tab2 = document.getElementById('tabGenerate');
+      if (tab1) tab1.classList.toggle('hidden', name !== 'tabPrompt');
+      if (tab2) tab2.classList.toggle('hidden', name !== 'tabGenerate');
+      document.querySelectorAll('[data-pbtab]').forEach(function (btn) {
+        var on = btn.getAttribute('data-pbtab') === name;
+        if (on) {
+          btn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 bg-indigo-600 text-white shadow-lg shadow-indigo-600/30';
+        } else {
+          btn.className = 'px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 text-slate-400 hover:text-white hover:bg-white/5';
+        }
+      });
+      if (window.lucide) lucide.createIcons();
     }
 
     // Ambil ?id= untuk mode edit; kalau tidak ada berarti preset baru.
@@ -506,10 +540,13 @@
         '1. Start by describing the target image/scene type (e.g. "Full-body graphic poster transfer.").',
         '2. Then state: preserve the EXACT facial likeness and identity of the subject in the guest photo.',
         '3. Then describe precisely what must be COPIED from the reference: the outfit, pose, props, lighting/color grading, background scenery, and (if the reference is a poster) its typography, text placement and layout. Be specific about what you actually see in the reference.',
-        '4. State plainly: change ONLY the face — swap the model/other person\u2019s face with the guest\u2019s face, keep everything else identical.',
-        '5. Keep any hijab/religious attire as-is and never remove or change it.',
-        '6. End with: Photorealistic, 8k.',
-        '7. Add a final line starting with "Negative Prompt: " followed by: (altered facial identity:1.5), face morphing, foreign face structure, smooth face filter, plastic skin, beautified face, heavy makeup, distorted hands, bad proportions, low resolution.',
+        '4. Describe the camera angle and framing that best matches the reference (e.g. eye-level, low angle, close-up, waist-up, full-body wide).',
+        '5. Identify and state a single consistent art style for the output, mirroring the reference (photorealistic, editorial, illustrated poster, cinematic, etc.).',
+        '6. Describe the mood/atmosphere conveyed by the reference (e.g. moody, celebratory, dreamy, high-energy) so the final image carries the same feel.',
+        '7. State plainly: change ONLY the face — swap the model/other person\u2019s face with the guest\u2019s face, keep everything else identical.',
+        '8. Keep any hijab/religious attire as-is and never remove or change it.',
+        '9. Finish with a quality tag appropriate to the chosen art style (e.g. "Photorealistic, 8k." or "Highly detailed illustration, 8k.").',
+        '10. Add a final line starting with "Negative Prompt: " followed by: (altered facial identity:1.5), face morphing, foreign face structure, smooth face filter, plastic skin, beautified face, heavy makeup, distorted hands, bad proportions, low resolution.',
         'Output ONLY the final prompt, no commentary.'
       ].join(String.fromCharCode(10));
 
