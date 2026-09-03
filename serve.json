@@ -1,4 +1,11 @@
 {
   "cleanUrls": false,
-  "trailingSlash": true
+  "trailingSlash": true,
+  "directoryListing": false,
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/admin/", "destination": "/admin/index.html" },
+    { "source": "/user", "destination": "/user/index.html" },
+    { "source": "/user/", "destination": "/user/index.html" }
+  ]
 }

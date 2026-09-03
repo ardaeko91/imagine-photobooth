@@ -6,6 +6,8 @@
   <title>Memproses Foto - Imagine Photobooth AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <script src="../js/store.js"></script>
+  <script src="../js/api.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
     @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
@@ -44,6 +46,7 @@
       <div id="progressBar" class="h-full bg-gradient-to-r from-indigo-500 via-pink-500 to-emerald-400 w-0 transition-all duration-500"></div>
     </div>
     <p id="progressText" class="text-[11px] font-mono text-slate-400">0%</p>
+    <p id="aiStatus" class="hidden text-[11px] font-mono text-amber-300 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30"></p>
   </main>
 
   <footer class="w-full max-w-4xl mx-auto text-center z-10 border-t border-white/10 pt-4">
@@ -51,8 +54,8 @@
   </footer>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      lucide.createIcons();
+    document.addEventListener("DOMContentLoaded", async function() {
+      if (window.lucide) lucide.createIcons();
 
       // Baca data dari localStorage
       const photo = localStorage.getItem('pb_photo');
@@ -64,22 +67,83 @@
       document.getElementById('previewImg').src = photo;
       document.getElementById('themeLabel').textContent = theme ? 'Gaya: ' + theme : 'Gaya: Default';
 
-      // Simulasi progress lalu menuju hasil
-      let progress = 0;
       const bar = document.getElementById('progressBar');
       const txt = document.getElementById('progressText');
+      const statusEl = document.getElementById('aiStatus');
+      let progress = 0;
+
+      // Progress berjalan pelan menuju 90% selama AI bekerja
       const timer = setInterval(() => {
-        progress += Math.floor(Math.random() * 15) + 5;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(timer);
-          bar.style.width = '100%';
-          txt.textContent = '100%';
-          setTimeout(() => { window.location.href = "result.html"; }, 600);
-        }
+        progress = Math.min(90, progress + Math.floor(Math.random() * 6) + 2);
         bar.style.width = progress + '%';
         txt.textContent = progress + '%';
-      }, 350);
+      }, 500);
+
+      function finish(photoData) {
+        clearInterval(timer);
+        localStorage.setItem('pb_photo', photoData);
+        bar.style.width = '100%';
+        txt.textContent = '100%';
+        setTimeout(() => { window.location.href = "result.html"; }, 600);
+      }
+
+      function fallbackDemo(reason) {
+        console.warn('Fallback mode demo:', reason);
+        statusEl.textContent = 'MODE DEMO — foto asli dipakai (' + reason + ')';
+        statusEl.classList.remove('hidden');
+        finish(photo);
+      }
+
+      // Coba generate AI memakai engine aktif dari Admin (Gemini / fal.ai)
+      if (typeof GeminiAPI !== 'undefined' && GeminiAPI.isConfigured()) {
+        try {
+          // Cari prompt & kualitas dari preset yang cocok dengan tema yang dipilih
+          var prompt = '';
+          var quality = getOutputQuality();
+          var presetImage = '';
+          var themeName = (theme || '').toLowerCase();
+          try {
+            var presets = getPresets();
+            for (var i = 0; i < presets.length; i++) {
+              if (presets[i].active !== false && (presets[i].name || '').toLowerCase() === themeName) {
+                prompt = presets[i].prompt || '';
+                if (presets[i].quality) quality = presets[i].quality;
+                presetImage = presets[i].image || '';
+                break;
+              }
+            }
+          } catch (e) { /* pakai prompt generik */ }
+
+          if (!prompt) {
+            prompt = 'Transform this photo into a "' + (theme || 'cinematic') + '" style portrait. Keep the person\'s facial identity, high detail, professional photobooth quality.';
+          }
+
+          statusEl.textContent = 'AI (' + getAiEngine().toUpperCase() + ' / ' + getActiveModel() + ') sedang memproses...';
+          statusEl.classList.remove('hidden');
+
+          var engine = getAiEngine();
+          // Urutan kanonik: foto tamu (webcam) = gambar #1, outfit preset = gambar #2
+          var guestImages = [{ role: 'guest', source: photo }];
+          if (presetImage) guestImages.push({ role: 'outfit', source: presetImage });
+          var result = await GeminiAPI.generateStyledPhoto({
+            images: guestImages,
+            prompt: prompt,
+            quality: quality
+          });
+
+          if (result.imageDataUrl) {
+            statusEl.textContent = '✓ Selesai dihasilkan oleh ' + (engine === 'fal' ? 'Fal.ai' : 'Gemini');
+            finish(result.imageDataUrl);
+          } else {
+            fallbackDemo('engine tidak mengembalikan gambar');
+          }
+        } catch (err) {
+          console.error(err);
+          fallbackDemo(err.message || 'gagal memanggil AI');
+        }
+      } else {
+        fallbackDemo('API key belum diisi di Admin');
+      }
     });
   </script>
 </body>

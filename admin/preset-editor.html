@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="../js/store.js"></script>
+  <script src="../js/api.js"></script>
   <style>
     body { background-color: #020617; font-family: system-ui, -apple-system, sans-serif; }
     @keyframes auroraRotate { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
@@ -76,7 +77,7 @@
         </a>
         <div>
           <h2 class="text-xl font-bold text-white">Preset AI Editor & Playground</h2>
-          <p class="text-xs text-slate-400">Racik prompt & multi-gambar referensi dengan uji coba langsung</p>
+          <p class="text-xs text-slate-400">Poster Transfer — salin komposisi, outfit & typography referensi, ganti hanya wajah</p>
         </div>
       </div>
       <button onclick="savePreset()" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-emerald-600/30">
@@ -89,115 +90,134 @@
         
         <!-- KOLOM KIRI (7 COLS) -->
         <div class="lg:col-span-7 space-y-6">
+          <!-- PRESET SETTINGS -->
           <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
             <div>
-              <label class="text-xs font-bold text-slate-200 block mb-1.5">NAMA TEMPLATE PRESET</label>
-              <input id="nameInput" type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-bold text-xs" value="Victorian Fashion & Cat Style" />
+              <h3 class="text-xs font-bold text-white flex items-center gap-2">
+                <i data-lucide="settings-2" class="w-3.5 h-3.5"></i> PRESET SETTINGS
+              </h3>
+              <p class="text-[10px] text-slate-400 mt-0.5">Nama preset, aspect ratio, kualitas, dan model AI yang dipakai kiosk.</p>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 text-xs">
+            <div class="space-y-3">
               <div>
-                <label class="text-slate-300 font-semibold block mb-1.5">ASPECT RATIO</label>
-                <select id="ratioSelect" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
-                  <option value="9:16" selected>9:16 (Portrait Kiosk)</option>
-                  <option value="1:1">1:1 (Square)</option>
-                  <option value="4:3">4:3 (Landscape)</option>
-                </select>
-              </div>
-              <div>
-                <label class="text-slate-300 font-semibold block mb-1.5">AI ENGINE MODEL</label>
-                <select id="modelSelect" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200">
-                  <option value="flux-dev">FLUX.1 Dev (fal.ai)</option>
-                  <option value="sdxl">SDXL ControlNet</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label class="text-xs font-bold text-slate-200 block mb-1.5">PROMPT INSTRUCTION</label>
-              <textarea id="promptInput" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono text-xs leading-relaxed" rows="3">Dress the model in the clothes and hat. Add a cat to the scene and change the background to a Victorian era building.</textarea>
-
-              <div>
-                <label class="text-xs font-bold text-slate-200 block mb-1.5">GAMBAR PREVIEW (URL atau bisa kosong)</label>
-                <input id="imageInput" type="text" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono text-xs" placeholder="https://.../foto.jpg" />
+                <label class="text-[10px] text-slate-400 font-semibold block mb-1">Nama Preset</label>
+                <input id="nameInput" type="text" placeholder="Contoh: Cyberpunk Poster" class="w-full p-2 rounded-lg bg-black/50 border border-white/15 text-slate-200 font-mono text-xs focus:border-indigo-500 focus:outline-none" />
               </div>
 
-              <label class="flex items-center justify-between p-3 rounded-xl bg-black/40 border border-white/15 cursor-pointer">
-                <span class="text-xs font-semibold text-slate-300">Aktif tampil di kiosk user</span>
-                <input id="activeInput" type="checkbox" class="w-4 h-4 accent-indigo-500" checked />
+              <div class="grid grid-cols-3 gap-3">
+                <div>
+                  <label class="text-[10px] text-slate-400 font-semibold block mb-1">Aspect Ratio</label>
+                  <select id="ratioSelect" class="w-full p-2 rounded-lg bg-black/50 border border-white/15 text-slate-200 font-mono text-xs focus:border-indigo-500 focus:outline-none">
+                    <option value="9:16">9:16 (Potret)</option>
+                    <option value="16:9">16:9 (Landscape)</option>
+                    <option value="1:1">1:1 (Persegi)</option>
+                    <option value="4:5">4:5 (Instagram)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 font-semibold block mb-1">Quality</label>
+                  <select id="qualitySelect" class="w-full p-2 rounded-lg bg-black/50 border border-white/15 text-slate-200 font-mono text-xs focus:border-indigo-500 focus:outline-none">
+                    <option value="standard">Standard</option>
+                    <option value="high">High</option>
+                    <option value="ultra">Ultra</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[10px] text-slate-400 font-semibold block mb-1">AI Model</label>
+                  <select id="modelSelect" class="w-full p-2 rounded-lg bg-black/50 border border-white/15 text-slate-200 font-mono text-xs focus:border-indigo-500 focus:outline-none">
+                    <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+                    <option value="gemini-3.1-pro">Gemini 3.1 Pro</option>
+                  </select>
+                </div>
+              </div>
+
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input id="activeInput" type="checkbox" class="w-4 h-4 rounded bg-black/50 border-white/15 text-indigo-600 focus:ring-indigo-500" />
+                <span class="text-xs text-slate-300">Aktifkan preset ini di kiosk</span>
               </label>
             </div>
           </div>
 
-          <!-- MULTI-IMAGE REFERENCES SLOTS (5 ITEMS - CAROUSEL) -->
+
+          <!-- PROMPT + TEMPLATE -->
           <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
-            <div class="flex justify-between items-center">
-              <div>
-                <h3 class="text-xs font-bold text-white flex items-center gap-2">
-                  <i data-lucide="images" class="w-4 h-4 text-indigo-400"></i> Multi Image References (5 Slots)
-                </h3>
-                <p class="text-[10px] text-slate-400 mt-0.5">Geser kanan-kiri untuk melihat referensi gambar</p>
-              </div>
-              <button onclick="document.getElementById('multiRefInput').click()" class="px-3 py-1.5 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
-                <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Image
-              </button>
-              <input type="file" id="multiRefInput" multiple accept="image/*" class="hidden" onchange="handleMultiRefUpload(this)" />
+            <div>
+              <h3 class="text-xs font-bold text-white flex items-center gap-2">
+                <i data-lucide="wand-2" class="w-3.5 h-3.5"></i> PROMPT INSTRUCTION
+              </h3>
+              <p class="text-[10px] text-slate-400 mt-0.5">Tulis instruksi transformasi. Pilih resep di bawah untuk mengisi otomatis, lalu klik <b class="text-indigo-300">RAPIKAN (AI)</b> untuk memperhalus.</p>
             </div>
 
-            <div class="relative group">
-              <div id="multiRefRow" class="flex gap-3 overflow-x-auto no-scrollbar py-1 scroll-smooth">
-                
-                <!-- Ref #1 -->
-                <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
-                  <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&auto=format&fit=crop" class="w-full h-full object-cover rounded-xl" />
-                  <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#1: Model</span>
-                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                  </button>
-                </div>
+            <textarea id="promptInput" rows="6" placeholder="Contoh: Poster transfer — salin komposisi, outfit & typography referensi, ganti hanya wajah tamu." class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-200 font-mono text-xs leading-relaxed focus:border-indigo-500 focus:outline-none resize-y"></textarea>
 
-                <!-- Ref #2 -->
-                <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
-                  <img src="https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=400&auto=format&fit=crop" class="w-full h-full object-cover rounded-xl" />
-                  <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#2: Outfit</span>
-                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                  </button>
-                </div>
+            <button type="button" id="genPromptBtn" onclick="generatePromptFromImages()" class="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-fuchsia-600 to-indigo-600 hover:from-fuchsia-500 hover:to-indigo-500 font-bold text-xs flex items-center justify-center gap-2 transition shadow-lg shadow-fuchsia-600/30">
+              <i data-lucide="wand-sparkles" class="w-4 h-4"></i> <span id="genPromptBtnLabel">GENERATE PROMPT DARI GAMBAR</span>
+            </button>
 
-                <!-- Ref #3 -->
-                <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
-                  <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&auto=format&fit=crop" class="w-4 h-4 object-cover w-full h-full rounded-xl" />
-                  <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#3: BG</span>
-                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                  </button>
-                </div>
+            <div>
+              <label for="promptModelSelect" class="text-[10px] text-slate-400 font-semibold block mb-1">Model (teks) untuk menulis & merapikan prompt</label>
+              <select id="promptModelSelect" onchange="onPromptModelChange(this.value)" class="w-full p-2 rounded-lg bg-black/50 border border-white/15 text-slate-200 font-mono text-xs focus:border-indigo-500 focus:outline-none">
+                <option value="gemini-2.5-flash">Gemini 2.5 Flash (default, multimodal)</option>
+                <option value="gemini-2.5-pro">Gemini 2.5 Pro</option>
+                <option value="gemini-3-flash">Gemini 3 Flash</option>
+              </select>
+            </div>
 
-                <!-- Ref #4 -->
-                <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
-                  <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=400&auto=format&fit=crop" class="w-full h-full object-cover rounded-xl" />
-                  <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#4: Pose</span>
-                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                  </button>
-                </div>
-
-                <!-- Ref #5 -->
-                <div class="shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item">
-                  <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&auto=format&fit=crop" class="w-full h-full object-cover rounded-xl" />
-                  <span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#5: Cat</span>
-                  <button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-                  </button>
-                </div>
-
-              </div>
+            <div class="flex items-center gap-2">
+              <select id="templateSelect" onchange="applyTemplate(this.value)" class="flex-1 p-2 rounded-lg bg-black/50 border border-white/15 text-slate-200 font-mono text-xs focus:border-indigo-500 focus:outline-none">
+                <option value="">— Pilih Resep Cepat —</option>
+                <option value="master">Master Poster Transfer</option>
+                <option value="poster">Poster (dengan typography)</option>
+                <option value="photo">Photo (tanpa teks)</option>
+                <option value="editorial">Editorial / Fashion</option>
+              </select>
+              <button type="button" id="refineBtn" onclick="refinePromptAI()" class="px-4 py-2 rounded-xl bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-300 border border-indigo-500/40 text-xs font-semibold flex items-center gap-1.5 transition shrink-0">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> <span id="refineBtnLabel">RAPIKAN (AI)</span>
+              </button>
             </div>
           </div>
 
-          <div class="flex items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/10">
-            <span class="text-xs text-slate-300 font-mono">Cost Estimation: <b class="text-emerald-400">$0.03 / run</b></span>
+
+          <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
+            <div>
+              <h3 class="text-xs font-bold text-white flex items-center gap-2">
+                <i data-lucide="images" class="w-4 h-4 text-indigo-400"></i> Referensi &amp; Foto Tamu
+              </h3>
+              <p class="text-[10px] text-slate-400 mt-0.5">Referensi = poster/foto target (komposisi, outfit, typography disalin). Foto Tamu = cuma untuk uji coba di playground ini (kiosk otomatis pakai foto dari webcam/import).</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <!-- REFERENSI -->
+              <div class="rounded-2xl bg-black/40 border border-white/15 p-3 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-mono font-bold text-indigo-300">#REFERENSI</span>
+                  <button type="button" onclick="clearReference()" id="refClearBtn" class="hidden p-1 rounded-lg bg-rose-600/90 text-white" title="Hapus referensi"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </div>
+                <div class="aspect-square rounded-xl bg-black/50 border border-white/10 overflow-hidden grid place-items-center cursor-pointer" onclick="document.getElementById('refFileInput').click()" title="Klik untuk upload referensi (poster target)">
+                  <div id="refPlaceholder" class="text-slate-500 text-[10px] font-mono text-center p-3"><i data-lucide="upload" class="w-6 h-6 mx-auto mb-1"></i>Upload poster target</div>
+                  <img id="refThumb" class="w-full h-full object-cover hidden" />
+                </div>
+              </div>
+              <!-- FOTO TAMU -->
+              <div class="rounded-2xl bg-black/40 border border-white/15 p-3 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-mono font-bold text-emerald-300">#FOTO TAMU</span>
+                  <button type="button" onclick="clearGuest()" id="guestClearBtn" class="hidden p-1 rounded-lg bg-rose-600/90 text-white" title="Hapus foto tamu"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </div>
+                <div class="aspect-square rounded-xl bg-black/50 border border-white/10 overflow-hidden grid place-items-center cursor-pointer" onclick="document.getElementById('guestFileInput').click()" title="Klik untuk import foto tamu uji">
+                  <div id="guestPlaceholder" class="text-slate-500 text-[10px] font-mono text-center p-3"><i data-lucide="user-plus" class="w-6 h-6 mx-auto mb-1"></i>Import foto tamu</div>
+                  <img id="guestThumb" class="w-full h-full object-cover hidden" />
+                </div>
+              </div>
+            </div>
+
+            <input type="file" id="refFileInput" accept="image/*" class="hidden" onchange="handleRefUpload(this)" />
+            <input type="file" id="guestFileInput" accept="image/*" class="hidden" onchange="handleGuestUpload(this)" />
+          </div>
+
+<div class="flex items-center justify-between p-4 rounded-2xl bg-black/40 border border-white/10">
+            <span class="text-xs text-slate-300 font-mono">Cost Estimation: <b class="text-emerald-400">$0.00 / run (Gemini Credit)</b></span>
             <button id="runBtn" onclick="runTestGenerate()" class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/40">
               <i data-lucide="play" class="w-4 h-4 fill-current"></i> <span>RUN TEST GENERATE</span>
             </button>
@@ -208,15 +228,34 @@
         <div class="lg:col-span-5 space-y-4 flex flex-col items-center">
           <div class="w-full flex justify-between items-center">
             <h3 class="text-xs font-bold text-slate-200">PLAYGROUND RESULT</h3>
-            <span id="statusText" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">STATUS: IDLE</span>
+            <span id="statusText" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-white/10">STATUS: IDLE</span>
           </div>
 
           <div class="relative w-full max-w-[280px] aspect-[9/16] rounded-3xl bg-slate-900 border-2 border-indigo-500/50 overflow-hidden shadow-2xl group">
             <img id="renderImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&auto=format&fit=crop" class="w-full h-full object-cover" />
             <div id="renderOverlay" class="absolute inset-0 hidden bg-slate-950/90 flex-col items-center justify-center gap-3 text-center p-6">
               <div class="w-10 h-10 rounded-full border-4 border-indigo-500/30 border-t-indigo-500 animate-spin"></div>
-              <p id="renderOverlayText" class="text-xs font-mono text-indigo-300">GENERATING...</p>
+              <p id="renderOverlayText" class="text-xs font-mono text-indigo-300">GEMINI 3.1 MEMPROSES FACE & OUTFIT SWAP...</p>
             </div>
+          </div>
+
+          <div class="w-full flex items-center gap-2">
+            <button type="button" onclick="downloadResult()" class="flex-1 px-4 py-2.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 font-semibold text-xs flex items-center justify-center gap-2 transition" title="Download hasil generate (JPEG)">
+              <i data-lucide="download" class="w-4 h-4"></i> DOWNLOAD HASIL
+            </button>
+            <button type="button" onclick="saveToGallery()" class="flex-1 px-4 py-2.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 font-semibold text-xs flex items-center justify-center gap-2 transition" title="Simpan ke Gallery & Storage admin">
+              <i data-lucide="images" class="w-4 h-4"></i> SIMPAN KE GALLERY
+            </button>
+          </div>
+
+          <div class="w-full p-4 rounded-2xl bg-black/80 border border-white/10 space-y-2 text-left">
+            <div class="flex items-center gap-1.5 text-indigo-400 font-mono text-[10px] font-bold">
+              <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+              <span id="geminiLogTitle">GEMINI 3.1 OUTPUT LOG:</span>
+            </div>
+            <p id="geminiOutputLog" class="text-[11px] font-mono text-slate-300 leading-relaxed italic line-clamp-4">
+              Hasil analisis foto dan racikan prompt dari Gemini AI akan tampil di sini saat kamu menekan tombol RUN TEST GENERATE.
+            </p>
           </div>
         </div>
 
@@ -226,13 +265,46 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
+      syncModelSelect();
+      syncPromptModelSelect();
       loadPreset();
     });
+
+    // Muat pilihan model teks prompt yang tersimpan (per engine aktif).
+    function syncPromptModelSelect() {
+      var sel = document.getElementById('promptModelSelect');
+      if (!sel) return;
+      var saved = getActivePromptModel();
+      if (saved && !sel.querySelector('option[value="' + saved + '"]')) {
+        var opt = document.createElement('option');
+        opt.value = saved;
+        opt.textContent = saved;
+        sel.appendChild(opt);
+      }
+      if (saved) sel.value = saved;
+    }
+    function onPromptModelChange(val) {
+      if (val) saveActivePromptModel(val);
+      showToast('Model prompt: ' + val, 'info');
+    }
 
     // Ambil ?id= untuk mode edit; kalau tidak ada berarti preset baru.
     function getEditId() {
       return new URLSearchParams(window.location.search).get('id');
+    }
+
+    // Sinkronkan modelSelect dengan model yang disimpan di Admin (Analytics)
+    function syncModelSelect() {
+      var sel = document.getElementById('modelSelect');
+      var saved = getActiveModel();
+      if (saved && !sel.querySelector('option[value="' + saved + '"]')) {
+        var opt = document.createElement('option');
+        opt.value = saved;
+        opt.textContent = saved + ' (custom)';
+        sel.appendChild(opt);
+      }
+      if (saved) sel.value = saved;
     }
 
     function loadPreset() {
@@ -242,134 +314,397 @@
       if (!p) { showToast('Preset tidak ditemukan', 'error'); return; }
 
       document.getElementById('nameInput').value = p.name || '';
-      document.getElementById('imageInput').value = p.image || '';
       document.getElementById('promptInput').value = p.prompt || '';
       document.getElementById('ratioSelect').value = p.ratio || '9:16';
-      document.getElementById('modelSelect').value = p.model || 'flux-dev';
-      document.getElementById('activeInput').checked = !!p.active;
+      document.getElementById('modelSelect').value = p.model || getActiveModel();
+      document.getElementById('qualitySelect').value = p.quality || getOutputQuality();
+      document.getElementById('activeInput').checked = (p.active !== false);
 
+      // p.image = referensi poster target (dipakai kiosk). Tampilkan di kartu Referensi.
+      window.__referenceSrc = p.image || '';
+      window.__guestOriginalSrc = null;
+      updateRefThumb();
       var img = document.getElementById('renderImg');
       if (p.image) img.src = p.image;
 
       document.title = 'Edit: ' + p.name + ' - Preset Editor';
     }
 
-    function savePreset() {
-      var name = document.getElementById('nameInput').value.trim();
-      if (!name) { showToast('Nama preset wajib diisi', 'error'); return; }
+    const SAFE_DUMMY_BASE64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
-      var image = document.getElementById('imageInput').value.trim();
-      var ratio = document.getElementById('ratioSelect').value;
-      var model = document.getElementById('modelSelect').value;
-      var prompt = document.getElementById('promptInput').value.trim();
-      var active = document.getElementById('activeInput').checked;
-
-      var list = getPresets();
-      var id = getEditId();
-      var existing = id ? list.find(function (x) { return x.id === String(id); }) : null;
-
-      if (existing) {
-        existing.name = name;
-        existing.image = image;
-        existing.ratio = ratio;
-        existing.model = model;
-        existing.prompt = prompt;
-        existing.active = active;
-      } else {
-        list.push({ id: uid('p'), name: name, image: image, ratio: ratio, model: model, prompt: prompt, active: active });
+    // Aman konversi gambar apapun tanpa terkena CORS gantung
+    async function safeGetBase64(src) {
+      if (!src) return SAFE_DUMMY_BASE64;
+      if (src.startsWith('data:image')) {
+        return src.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '');
       }
-
-      savePresets(list);
-      showToast('Preset "' + name + '" disimpan ✓', 'success');
-      setTimeout(function () { window.location.href = 'presets.html'; }, 600);
+      try {
+        const res = await fetch(src, { mode: 'cors' });
+        const blob = await res.blob();
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const b64 = reader.result || '';
+            resolve(b64.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '') || SAFE_DUMMY_BASE64);
+          };
+          reader.onerror = () => resolve(SAFE_DUMMY_BASE64);
+          reader.readAsDataURL(blob);
+        });
+      } catch (e) {
+        return SAFE_DUMMY_BASE64;
+      }
     }
 
-    function runTestGenerate() {
-      var name = document.getElementById('nameInput').value.trim() || 'Untitled';
+    /* ---------------- PROMPT BUILDER ---------------- */
+
+
+    async function runTestGenerate() {
+      if (typeof GeminiAPI === 'undefined' || !GeminiAPI.isConfigured()) {
+        showToast('API Key engine aktif belum terisi! Isikan di Analytics & Tokens.', 'error');
+        return;
+      }
+
+      var selectedModel = document.getElementById('modelSelect').value;
+      var promptText = document.getElementById('promptInput').value.trim();
+      var selRatio = document.getElementById('ratioSelect').value;
+      var selQuality = document.getElementById('qualitySelect').value;
+
       var btn = document.getElementById('runBtn');
       var status = document.getElementById('statusText');
       var overlay = document.getElementById('renderOverlay');
-      var img = document.getElementById('renderImg');
       var overlayText = document.getElementById('renderOverlayText');
+      var logEl = document.getElementById('geminiOutputLog');
+      var logTitle = document.getElementById('geminiLogTitle');
+      var renderImg = document.getElementById('renderImg');
 
-      if (btn.dataset.running === '1') return;
-
-      btn.dataset.running = '1';
       btn.disabled = true;
-      btn.querySelector('span').textContent = 'GENERATING...';
-      status.textContent = 'STATUS: PROCESSING';
-      status.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300';
+      status.textContent = 'STATUS: GENERATING';
+      status.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-600/30 text-indigo-400 border border-indigo-500/40 animate-pulse';
+
       overlay.classList.remove('hidden');
       overlay.classList.add('flex');
-      overlayText.textContent = 'AI sedang meracik gaya "' + name + '"...';
+      var engineName = (getAiEngine() === 'fal') ? 'Fal.ai' : 'Gemini';
+      overlayText.textContent = engineName + ' (' + selectedModel + ') sedang memproses...';
 
-      // Simulasi proses generate
-      var progress = 0;
-      var maxSteps = ['Menganalisis wajah...', 'Menerapkan gaya...', 'Menghaluskan detail...', 'Menambahkan sentuhan AI...'];
-      var step = 0;
-      var timer = setInterval(function () {
-        progress += Math.floor(Math.random() * 18) + 8;
-        if (step < maxSteps.length) overlayText.textContent = maxSteps[step];
-        step++;
-        if (progress >= 100) {
-          clearInterval(timer);
-          finishGenerate(btn, status, overlay, name);
+      try {
+        // Simpan pilihan model agar kiosk memakai model yang sama
+        if (getAiEngine() === 'fal') saveFalModel(selectedModel);
+        else saveGeminiModel(selectedModel);
+
+        // Kumpulkan gambar BERDASARKAN PERAN:
+        //   guest  = foto tamu uji (kiosk: foto dari webcam/import pengunjung)
+        //   outfit = referensi poster target (komposisi, outfit, typography disalin)
+        // Urutan kanonik (guest=#1, outfit=#2) diurutkan ulang di api.js.
+        var sources = [{ role: 'guest', source: window.__guestOriginalSrc || renderImg.src }];
+        if (window.__referenceSrc) sources.push({ role: 'outfit', source: window.__referenceSrc });
+
+        var result = await GeminiAPI.generateStyledPhoto({
+          images: sources,
+          prompt: promptText,
+          model: selectedModel,
+          aspectRatio: selRatio,
+          quality: selQuality
+        });
+
+        if (result.imageDataUrl) {
+          renderImg.src = result.imageDataUrl;
+          lastGeneratedImage = result.imageDataUrl;
+          logTitle.innerText = engineName.toUpperCase() + ' — GAMBAR DIGENERATE:';
+          logEl.innerText = result.text || ('Gambar berhasil digenerate dengan ' + selectedModel + '.');
+          showToast('✓ Gambar berhasil digenerate & disimpan ke Gallery!', 'success');
+          try { saveToGallery(); } catch (e) { console.error('auto-gallery failed', e); }
+        } else {
+          var diag = result.blockReason ? ('Respons diterima TANPA gambar (finishReason: ' + result.blockReason + '). Coba revisi prompt / foto referensi.') : (result.text || '(tidak ada output)');
+          logTitle.innerText = engineName.toUpperCase() + ' RESPONSE:';
+          logEl.innerText = diag;
+          showToast(result.blockReason ? 'Tanpa gambar: ' + result.blockReason : 'Respons diterima (tanpa gambar). Cek log.', 'info');
         }
-      }, 450);
+
+        status.textContent = 'STATUS: SUCCESS';
+        status.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300';
+
+      } catch (err) {
+        console.error(err);
+        logEl.innerText = "Error: " + (err.message || "Gagal melakukan Swap");
+        status.textContent = 'STATUS: ERROR';
+        status.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-rose-600/30 text-rose-400 border border-rose-500/40';
+        showToast('Error: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+      }
     }
 
-    function finishGenerate(btn, status, overlay, name) {
-      btn.dataset.running = '';
-      btn.disabled = false;
-      btn.querySelector('span').textContent = 'RUN AGAIN';
-      status.textContent = 'STATUS: DONE';
-      status.className = 'text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300';
-
+    // --- Download hasil generate sebagai file JPEG ---
+    function downloadResult() {
       var img = document.getElementById('renderImg');
-      var imageUrl = document.getElementById('imageInput').value.trim();
-      // Pakai gambar preview jika ada URL, abaikan untuk hasil (simulasi).
-      // Catat hasil ke galeri sebagai foto tersimpan.
-      var previewSrc = imageUrl || img.src;
+      if (!img || !img.src || img.src.indexOf('data:') !== 0) {
+        showToast('Belum ada hasil generate untuk diunduh. Jalankan RUN TEST dulu.', 'info');
+        return;
+      }
+      var name = (document.getElementById('nameInput').value.trim() || 'poster-transfer') + '.jpg';
+      var a = document.createElement('a');
+      a.href = img.src;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('Mengunduh ' + name, 'success');
+    }
+
+    // --- Simpan hasil generate ke Gallery & Storage admin ---
+    function saveToGallery() {
+      var img = document.getElementById('renderImg');
+      if (!img || !img.src || img.src.indexOf('data:') !== 0) {
+        showToast('Belum ada hasil untuk disimpan. Jalankan RUN TEST dulu.', 'info');
+        return;
+      }
+      var name = document.getElementById('nameInput').value.trim() || 'Poster Transfer';
       addToGallery({
         id: uid('g'),
-        session: 'RN' + Date.now().toString().slice(-6),
+        session: 'Test-' + (new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/[^0-9]/g, '')),
         theme: name,
-        photo: previewSrc,
-        source: 'test'
+        photo: img.src
       });
-
-      overlay.classList.add('hidden');
-      overlay.classList.remove('flex');
-      overlayText.textContent = 'GENERATING...';
-      showToast('Generate test selesai & masuk Gallery', 'success');
+      showToast('✓ Disimpan ke Gallery & Storage', 'success');
     }
 
-    // --- Multi Image References: hapus thumbnail & tambah dari file ---
-    function removeRef(btn) {
-      var card = btn.closest('.shrink-0');
-      if (card) card.remove();
+    // --- Generate prompt otomatis dari analisis kedua gambar ---
+    async function generatePromptFromImages() {
+      var key = getApiKey();
+      if (!key) { showToast('Isi API Key dulu di menu Analytics & Tokens', 'error'); return; }
+
+      var guest = window.__guestOriginalSrc || (document.getElementById('renderImg').src && document.getElementById('renderImg').src.indexOf('data:') === 0 ? document.getElementById('renderImg').src : null);
+      var ref = window.__referenceSrc;
+      if (!ref) { showToast('Upload dulu gambar REFERENSI (poster target)', 'error'); return; }
+      if (!guest) { showToast('Belum ada foto tamu. Upload atau RUN TEST dulu.', 'error'); return; }
+
+      var btn = document.getElementById('genPromptBtn');
+      var lbl = document.getElementById('genPromptBtnLabel');
+      btn.disabled = true; lbl.textContent = 'MENGANALISIS GAMBAR...';
+
+      // Konversi kedua gambar ke { mimeType, data } untuk Gemini multimodal.
+      async function toInline(src) {
+        if (String(src).indexOf('data:image/') === 0) {
+          var m = src.match(/^data:(image\/[^;]+);base64,(.*)$/s);
+          return { mimeType: m[1], data: m[2] };
+        }
+        var b64 = await imageUrlToBase64(src);
+        return { mimeType: 'image/jpeg', data: b64 };
+      }
+      var refInline, guestInline;
+      try {
+        refInline = await toInline(ref);
+        guestInline = await toInline(guest);
+      } catch (e) { btn.disabled = false; lbl.textContent = 'GENERATE PROMPT DARI GAMBAR'; showToast('Gagal memproses gambar: ' + e.message, 'error'); return; }
+
+      var sys = [
+        'You are an expert prompt engineer for AI image generation (style transfer / poster photobooth).',
+        'You are given TWO images: Image 1 = a guest photo, Image 2 = a reference poster/photo.',
+        'Write ONE flowing English paragraph that becomes the generation prompt, following this recipe:',
+        '1. Start by describing the target image/scene type (e.g. "Full-body graphic poster transfer.").',
+        '2. Then state: preserve the EXACT facial likeness and identity of the subject in the guest photo.',
+        '3. Then describe precisely what must be COPIED from the reference: the outfit, pose, props, lighting/color grading, background scenery, and (if the reference is a poster) its typography, text placement and layout. Be specific about what you actually see in the reference.',
+        '4. State plainly: change ONLY the face — swap the model/other person\u2019s face with the guest\u2019s face, keep everything else identical.',
+        '5. Keep any hijab/religious attire as-is and never remove or change it.',
+        '6. End with: Photorealistic, 8k.',
+        '7. Add a final line starting with "Negative Prompt: " followed by: (altered facial identity:1.5), face morphing, foreign face structure, smooth face filter, plastic skin, beautified face, heavy makeup, distorted hands, bad proportions, low resolution.',
+        'Output ONLY the final prompt, no commentary.'
+      ].join(String.fromCharCode(10));
+
+      try {
+        var res = await fetch(GEMINI_API_URL + '/' + getActivePromptModel() + ':generateContent?key=' + encodeURIComponent(key), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [
+              { inlineData: refInline },
+              { inlineData: guestInline },
+              { text: sys }
+            ] }],
+            generationConfig: { temperature: 0.7 }
+          })
+        });
+        if (!res.ok) {
+          var err = await res.json().catch(function () { return {}; });
+          throw new Error((err.error && err.error.message) || ('HTTP ' + res.status));
+        }
+        var data = await res.json();
+        var parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
+        var out = parts.map(function (p) { return p.text || ''; }).join('').trim();
+        if (!out) throw new Error('Respons kosong dari model teks');
+        document.getElementById('promptInput').value = out;
+        showToast('Prompt tergenerate dari gambar ✓ — review lalu RUN TEST', 'success');
+      } catch (e) {
+        showToast('Gagal generate prompt: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false; lbl.textContent = 'GENERATE PROMPT DARI GAMBAR';
+      }
     }
 
-    function handleMultiRefUpload(input) {
-      Array.prototype.forEach.call(input.files || [], function (file) {
-        if (!file.type.match('image/.*')) return;
-        var reader = new FileReader();
-        reader.onload = function (e) {
-          var container = document.querySelector('#multiRefRow');
-          if (!container) return;
-          var div = document.createElement('div');
-          div.className = 'shrink-0 w-[110px] aspect-square rounded-2xl bg-black/50 border border-white/15 p-1 relative overflow-hidden group/item';
-          div.innerHTML =
-            '<img src="' + e.target.result + '" class="w-full h-full object-cover rounded-xl" />' +
-            '<span class="absolute bottom-1.5 left-1.5 text-[8px] font-mono px-1.5 py-0.5 rounded bg-black/80 text-slate-200">#Ref</span>' +
-            '<button onclick="removeRef(this)" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-rose-600/90 text-white shadow-lg hover:bg-rose-500 transition" title="Hapus Referensi"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>';
-          container.appendChild(div);
-          lucide.createIcons();
-        };
-        reader.readAsDataURL(file);
-      });
+
+
+    /* RESEP PENUH — prosa mengalir persis format prompt pemenang:
+       dibuka dengan scene, identitas disisip di tengah kalimat, ditutup quality + Negative Prompt. */
+    var TEMPLATE_NEG = '(altered facial identity:1.5), face morphing, foreign face structure, smooth face filter, plastic skin, beautified face, heavy makeup, distorted hands, bad proportions, low resolution.';
+    var FULL_TEMPLATES = {
+      master: 'Image-to-image graphic poster transfer. Preserve 100% exact facial likeness and identity of the subject from the input photo. Replicate the outfit, props, color grading, background scenery, and full poster layout including its typography and text placement from the reference image. Replace only the model face and identity with the person from the input photo. Cinematic, highly detailed, 8k.',
+      poster: 'Image-to-image graphic poster transfer. Preserve 100% exact facial likeness and identity of the subject from the input photo. Replicate the outfit, headwear, accessories, atmospheric effects, backdrop scenery, and promotional typography poster layout from the reference image. Replace only the model face with the person from the input photo. Cinematic, highly detailed, 8k.',
+      photo: 'Image-to-image photo transfer. Preserve 100% exact facial likeness and identity of the subject from the input photo. Replicate the exact composition, pose, outfit, lighting style, and background scenery of the reference image, rendered as a realistic photograph without any text or typography overlay. Replace only the model face with the person from the input photo. Photorealistic, 8k.',
+      editorial: 'Full-body editorial photo replicating the exact composition and styling of the reference image, featuring the face and identity of the person from the input image. Replicate the outfit, lighting, mood and background of the reference precisely; change only the face. Soft natural skin tones, deep bokeh, Photorealistic, 8k.'
+    };
+
+    function applyTemplate(key) {
+      if (!key || !FULL_TEMPLATES[key]) return;
+      document.getElementById('promptInput').value = FULL_TEMPLATES[key] + '\nNegative Prompt:\n' + TEMPLATE_NEG;
+      showToast('Resep "' + key + '" dimuat — REVIEW lalu RUN TEST');
+    }
+
+
+
+    /* ---------------- FACE AUTO-CROP ----------------
+     * Deteksi wajah via FaceDetector API (Chrome) bila tersedia;
+     * fallback: crop atas-tengah (heuristik potret). Output data URL persegi.
+     */
+    async function refinePromptAI() {
+      var key = getApiKey();
+      if (key === null || key === '') { showToast('Isi API Key dulu di menu Analytics & Tokens', 'error'); return; }
+      var ta = document.getElementById('promptInput');
+      if (ta.value.trim() === '') { showToast('Tulis dulu ide prompt-mu (boleh bahasa Indonesia)', 'error'); return; }
+      var btn = document.getElementById('refineBtn');
+      var lbl = document.getElementById('refineBtnLabel');
+      btn.disabled = true; lbl.textContent = 'MERAPIKAN...';
+      try {
+        var sys = [
+          'You are an expert prompt engineer for Gemini image generation (Nano Banana).',
+          'Rewrite the user prompt idea into ONE flowing English paragraph following this winning recipe:',
+          '1. Start with the desired image type/scene (e.g. Full-body editorial photo ...).',
+          '2. Early in the first sentence depict the subject as ONE natural fully integrated person, phrased like: the person from the input photo naturally standing/posing. NEVER phrase it as pasting, inserting, swapping or compositing a face.',
+          '3. Then one flowing sentence: list exactly what must be copied from the reference image (outfit, props, background, lighting, typography or poster layout). Never describe changing clothes onto the guest - the reference itself IS the target composition.',
+          '4. End the paragraph with: Photorealistic, 8k.',
+          '5. Keep any hijab/religious-attire rule and same-number-of-people rule if present.',
+          '6. Add a final line starting with: Negative Prompt: followed by: (altered facial identity:1.5), face morphing, foreign face structure, smooth face filter, plastic skin, beautified face, heavy makeup, distorted hands, bad proportions, low resolution.',
+          'If the user wrote in Indonesian, translate to English.',
+          'Output ONLY the final prompt.'
+        ].join(String.fromCharCode(10));
+        var res = await fetch(GEMINI_API_URL + '/' + getActivePromptModel() + ':generateContent?key=' + encodeURIComponent(key), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + String.fromCharCode(10, 10) + 'User prompt idea:' + ta.value.trim() }] }], generationConfig: { temperature: 0.6 } })
+        });
+        if (res.ok === false) {
+          var err = await res.json().catch(function(){ return {}; });
+          throw new Error((err.error && err.error.message) || ('HTTP ' + res.status));
+        }
+        var data = await res.json();
+        var parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
+        var out = parts.map(function(p){ return p.text || ''; }).join('').trim();
+        if (out === '') throw new Error('Respons kosong dari model teks');
+        ta.value = out;
+        showToast('Prompt dirapikan oleh AI - review lalu RUN TEST', 'success');
+      } catch (e) {
+        showToast('Gagal merapikan: ' + e.message, 'error');
+      } finally {
+        btn.disabled = false; lbl.textContent = 'RAPIKAN (AI)';
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+    
+
+
+    var lastGeneratedImage = null;
+
+    // --- Uploader Referensi & Foto Tamu ---
+    function updateRefThumb() {
+      var has = !!window.__referenceSrc;
+      document.getElementById('refThumb').src = has ? window.__referenceSrc : '';
+      document.getElementById('refThumb').classList.toggle('hidden', !has);
+      document.getElementById('refPlaceholder').classList.toggle('hidden', has);
+      document.getElementById('refClearBtn').classList.toggle('hidden', !has);
+    }
+    function updateGuestThumb() {
+      var has = !!window.__guestOriginalSrc;
+      document.getElementById('guestThumb').src = has ? window.__guestOriginalSrc : '';
+      document.getElementById('guestThumb').classList.toggle('hidden', !has);
+      document.getElementById('guestPlaceholder').classList.toggle('hidden', has);
+      document.getElementById('guestClearBtn').classList.toggle('hidden', !has);
+    }
+    function handleRefUpload(input) {
+      var file = (input.files || [])[0];
+      if (!file || !file.type.match('image/.*')) return;
+      var reader = new FileReader();
+      reader.onload = function (e) { window.__referenceSrc = e.target.result; updateRefThumb(); };
+      reader.readAsDataURL(file);
       input.value = '';
     }
-  </script>
+    function handleGuestUpload(input) {
+      var file = (input.files || [])[0];
+      if (!file || !file.type.match('image/.*')) return;
+      var reader = new FileReader();
+      reader.onload = function (e) { window.__guestOriginalSrc = e.target.result; updateGuestThumb(); };
+      reader.readAsDataURL(file);
+      input.value = '';
+    }
+    function clearReference() { window.__referenceSrc = ''; updateRefThumb(); }
+    function clearGuest() { window.__guestOriginalSrc = null; updateGuestThumb(); }
+
+    // Simpan preset (baru atau edit via ?id=) ke store bersama
+    async function savePreset() {
+      var id = getEditId();
+      var name = document.getElementById('nameInput').value.trim();
+      if (!name) { showToast('Nama preset tidak boleh kosong!', 'error'); return; }
+
+      var preset = {
+        name: name,
+        image: await (async function () {
+          // Priority: uploaded reference image → fallback lastGeneratedImage → empty.
+          // imageInput no longer exists in UI (replaced by Reference card).
+          if (window.__referenceSrc) return await GeminiAPI.downscaleDataUrl(window.__referenceSrc, 720, 0.82);
+          if (typeof lastGeneratedImage !== 'undefined' && lastGeneratedImage) return await GeminiAPI.downscaleDataUrl(lastGeneratedImage, 720, 0.82);
+          return '';
+        })(),
+        prompt: document.getElementById('promptInput').value.trim(),
+        ratio: document.getElementById('ratioSelect').value,
+        model: document.getElementById('modelSelect').value,
+        quality: document.getElementById('qualitySelect').value,
+        active: document.getElementById('activeInput').checked
+      };
+
+      var list = getPresets();
+      if (id) {
+        var found = null;
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].id === String(id)) { found = list[i]; break; }
+        }
+        if (!found) { showToast('Preset tidak ditemukan', 'error'); return; }
+        Object.keys(preset).forEach(function (k) { found[k] = preset[k]; });
+        try { savePresets(list); } catch (e) { showToast('Storage penuh: pakai URL gambar untuk thumbnail.', 'error'); return; }
+        showToast('Preset "' + name + '" diperbarui ✓');
+      } else {
+        preset.id = uid('p');
+        list.unshift(preset);
+        try { savePresets(list); } catch (e) { showToast('Storage penuh: pakai URL gambar untuk thumbnail.', 'error'); return; }
+        showToast('Preset "' + name + '" ditambahkan ✓');
+      }
+
+      setTimeout(function () { window.location.href = 'presets.html'; }, 900);
+    }
+  async function refreshModelList() {
+  var key = document.getElementById('geminiKeyInput').value.trim() || getApiKey();
+  var sel = document.getElementById('modelSelect');
+  if (!key) { showToast('Isi Gemini API Key di Analytics dulu.', 'error'); return; }
+  sel.options.length = 0; sel.add(new Option('Memuat...', ''));
+  try {
+    var list = await GeminiAPI.listGeminiModels(key);
+    sel.options.length = 0; sel.add(new Option('Pilih dari ' + list.length + ' model:', ''));
+    list.forEach(function (m) { sel.add(new Option(m.label, m.id)); });
+    showToast(list.length + ' model gambar dimuat');
+  } catch (e) {
+    sel.options.length = 0; sel.add(new Option('Gagal: ' + (e.message || 'error'), ''));
+    showToast(e.message || 'Gagal memuat', 'error');
+  }
+}
+</script>
 </body>
 </html>

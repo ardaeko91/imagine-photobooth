@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Analytics - Admin Imagine Photobooth</title>
+  <title>Analytics & Tokens - Admin Imagine Photobooth</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <script src="../js/store.js"></script>
@@ -17,9 +17,10 @@
     }
   </style>
 </head>
-<body class="h-screen text-slate-100 flex overflow-hidden relative">
+<body class="h-screen text-slate-100 flex overflow-hidden relative select-none">
   <div class="aurora-admin"></div>
 
+  <!-- FIXED SIDEBAR -->
   <aside class="w-64 h-screen sticky top-0 border-r border-white/10 bg-slate-950/90 backdrop-blur-2xl p-6 flex flex-col justify-between shrink-0 z-30">
     <div class="space-y-8">
       <div class="flex items-center gap-3">
@@ -37,7 +38,10 @@
           <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard
         </a>
         <a href="presets.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
-          <i data-lucide="palette" class="w-4 h-4"></i> Preset & Prompts
+          <i data-lucide="palette" class="w-4 h-4"></i> Daftar Preset AI
+        </a>
+        <a href="preset-editor.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition pl-7 text-[11px]">
+          <i data-lucide="sliders" class="w-3.5 h-3.5 text-indigo-400"></i> Preset Playground
         </a>
         <a href="branding.html" class="flex items-center gap-3 px-3.5 py-3 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition">
           <i data-lucide="image" class="w-4 h-4"></i> Branding & Overlay
@@ -61,32 +65,99 @@
     </div>
   </aside>
 
+  <!-- MAIN CONTENT -->
   <div class="flex-1 flex flex-col h-screen overflow-y-auto z-10">
     <header class="p-6 border-b border-white/10 flex justify-between items-center bg-slate-950/60 backdrop-blur-md sticky top-0 z-20">
       <div>
-        <h2 class="text-xl font-bold text-white">Analytics & API Token Key</h2>
+        <h2 class="text-xl font-bold text-white">Analytics & API Credentials</h2>
         <p class="text-xs text-slate-400">Statistik penggunaan kuota AI dan konfigurasi API Key</p>
       </div>
-      <button onclick="saveApiKeyHandler()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
-        <i data-lucide="key" class="w-4 h-4"></i> Simpan API Key
-      </button>
+      <span id="engineBadge" class="px-3 py-1.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ENGINE: GEMINI</span>
     </header>
 
-    <main class="p-8 space-y-6">
-      <div class="p-6 rounded-3xl bg-slate-900/60 border border-white/10 backdrop-blur-xl space-y-4">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <i data-lucide="cpu" class="w-4 h-4 text-indigo-400"></i> API Credentials
-        </h3>
-        <div class="space-y-3 text-xs">
-          <div>
-            <label class="text-slate-300 font-semibold block mb-1.5">REPLICATE / GROQ API KEY</label>
-            <input id="apiKeyInput" type="password" class="w-full p-3 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono" value="r8_abcdef1234567890987654321" />
+    <main class="p-8 space-y-6 max-w-4xl">
+      <div class="p-6 rounded-3xl bg-slate-900/60 border border-indigo-500/30 backdrop-blur-xl space-y-5 shadow-xl">
+        <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+          <div class="p-2.5 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-500/30">
+            <i data-lucide="key" class="w-5 h-5"></i>
           </div>
-          <div class="flex items-center gap-3">
-            <button onclick="verifyApiKey()" class="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 font-bold text-xs flex items-center gap-2 transition">
-              <i data-lucide="shield-check" class="w-4 h-4"></i> Verifikasi Key
+          <div>
+            <h3 class="text-sm font-bold text-white">Multi-Engine API Credentials</h3>
+            <p class="text-xs text-slate-400">Atur token Google AI Studio (Gemini) & Fal.ai Engine untuk Kiosk</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <!-- PILIH ENGINE AKTIF -->
+          <div class="p-4 rounded-2xl bg-black/40 border border-indigo-500/30">
+            <label class="block text-xs font-bold text-indigo-300 mb-2">AI ENGINE AKTIF (dipakai Kiosk & Playground)</label>
+            <select id="engineSelect" onchange="onEngineChange()" class="w-full p-3.5 rounded-xl bg-black/60 border border-white/15 text-slate-100 font-mono text-xs cursor-pointer">
+              <option value="gemini">Google Gemini — pakai credit AI Studio (aktif sekarang)</option>
+              <option value="fal">Fal.ai — ganti saat credit Gemini habis</option>
+            </select>
+            <p class="text-[10px] text-slate-400 mt-1.5">Kedua key & model tetap tersimpan — cukup pindahkan switch, kiosk otomatis ikut.</p>
+          </div>
+
+          <!-- INPUT GEMINI API KEY -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-2">GOOGLE GEMINI API KEY</label>
+            <input type="password" id="geminiKeyInput" placeholder="Masukkan API Key (contoh: AIzaSy... / AQ.Ab...)" class="w-full p-3.5 rounded-xl bg-black/60 border border-white/15 text-slate-100 font-mono text-xs focus:outline-none focus:border-indigo-500" />
+            <p class="text-[10px] text-slate-400 mt-1.5">
+              Dapatkan API Key di <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-indigo-400 underline font-semibold">aistudio.google.com/app/apikey</a>
+            </p>
+          </div>
+
+          <!-- INPUT GEMINI MODEL -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-2">TARGET MODEL GEMINI</label>
+            <div class="flex gap-2">
+              <input type="text" id="geminiModelInput" value="gemini-3.1-flash-image" class="flex-1 p-3.5 rounded-xl bg-black/60 border border-white/15 text-slate-100 font-mono text-xs" />
+              <select id="geminiModelPreset" onchange="document.getElementById('geminiModelInput').value = this.value" class="p-3.5 rounded-xl bg-black/80 border border-white/15 text-slate-200 font-mono text-xs cursor-pointer">
+                <option value="gemini-2.5-flash-image">Preset: gemini-2.5-flash-image (Nano Banana — paling mirip wajah)</option>
+                <option value="gemini-3-pro-image-preview">Preset: gemini-3-pro-image-preview (Nano Banana Pro)</option>
+                <option value="gemini-3.1-flash-image">Preset: gemini-3.1-flash-image</option>
+                <option value="">— Muat daftar dari API untuk model lain —</option>
+              </select>
+              <button type="button" onclick="loadGeminiModels()" class="px-3 rounded-xl bg-indigo-600/70 hover:bg-indigo-500 text-white text-xs font-bold whitespace-nowrap transition">Muat Model</button>
+            </div>
+          </div>
+
+          <!-- INPUT FAL.AI API KEY -->
+          <div class="pt-2 border-t border-white/10">
+            <label class="block text-xs font-bold text-indigo-300 mb-2">FAL.AI API KEY</label>
+            <input type="password" id="falKeyInput" placeholder="fal_..." class="w-full p-3.5 rounded-xl bg-black/60 border border-indigo-500/30 text-slate-100 font-mono text-xs focus:outline-none focus:border-indigo-500" />
+            <p class="text-[10px] text-slate-400 mt-1.5">Dapatkan di <a href="https://fal.ai/dashboard/keys" target="_blank" class="text-indigo-400 underline font-semibold">fal.ai/dashboard/keys</a> untuk FLUX image generation super cepat.</p>
+          </div>
+
+          <!-- INPUT FAL.AI MODEL -->
+          <div>
+            <label class="block text-xs font-bold text-slate-300 mb-2">TARGET MODEL FAL.AI</label>
+            <div class="flex gap-2">
+              <input type="text" id="falModelInput" value="fal-ai/flux-lora" class="flex-1 p-3.5 rounded-xl bg-black/60 border border-white/15 text-slate-100 font-mono text-xs" />
+              <select onchange="document.getElementById('falModelInput').value = this.value" class="p-3.5 rounded-xl bg-black/80 border border-white/15 text-slate-200 font-mono text-xs cursor-pointer">
+                <option value="fal-ai/flux-lora">Preset: fal-ai/flux-lora (gaya + wajah)</option>
+                <option value="fal-ai/flux/dev">Preset: fal-ai/flux/dev</option>
+                <option value="fal-ai/flux/dev/image-to-image">Preset: fal-ai/flux/dev/image-to-image</option>
+                <option value="fal-ai/ideogram/v2/edit">Preset: fal-ai/ideogram/v2/edit</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- BUTTONS -->
+          <div class="flex flex-wrap items-center gap-3 pt-4">
+            <button type="button" onclick="verifyKeyOnly()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/15 font-bold text-xs flex items-center gap-2 transition">
+              <i data-lucide="shield-check" class="w-4 h-4 text-indigo-400"></i>
+              <span>Verifikasi Key & Model</span>
             </button>
-            <span id="apiStatus" class="text-[11px] font-mono text-slate-400">Belum diverifikasi</span>
+
+            <button type="button" onclick="saveKeyOnly()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 font-bold text-xs flex items-center gap-2 transition shadow-lg shadow-indigo-600/30">
+              <i data-lucide="save" class="w-4 h-4"></i>
+              <span>Simpan Semua Konfigurasi</span>
+            </button>
+          </div>
+
+          <div id="statusBox" class="p-3 rounded-xl bg-black/40 border border-white/10 hidden mt-3">
+            <p id="statusMsg" class="text-xs font-mono"></p>
           </div>
         </div>
       </div>
@@ -95,39 +166,127 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      lucide.createIcons();
-      // Isi input dengan key yang sudah disimpan
-      var saved = getApiKey();
-      if (saved) document.getElementById('apiKeyInput').value = saved;
+      if (window.lucide) lucide.createIcons();
+
+      document.getElementById('geminiKeyInput').value = getApiKey();
+      document.getElementById('falKeyInput').value = getFalApiKey();
+      document.getElementById('geminiModelInput').value = getGeminiModel();
+      document.getElementById('falModelInput').value = getFalModel();
+      document.getElementById('engineSelect').value = getAiEngine();
+      updateEngineBadge();
     });
 
-    function saveApiKeyHandler() {
-      var key = document.getElementById('apiKeyInput').value.trim();
-      if (!key) { showToast('API key tidak boleh kosong', 'error'); return; }
-      saveApiKey(key);
-      showToast('API Key disimpan ✓', 'success');
+    function updateEngineBadge() {
+      var engine = document.getElementById('engineSelect').value;
+      var badge = document.getElementById('engineBadge');
+      if (engine === 'fal') {
+        badge.textContent = 'ENGINE: FAL.AI';
+        badge.className = 'px-3 py-1.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      } else {
+        badge.textContent = 'ENGINE: GEMINI';
+        badge.className = 'px-3 py-1.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+      }
     }
 
-    function verifyApiKey() {
-      var key = document.getElementById('apiKeyInput').value.trim();
-      var status = document.getElementById('apiStatus');
-      if (!key) {
-        status.textContent = 'Masukkan key dulu';
-        status.className = 'text-[11px] font-mono text-rose-400';
+    function onEngineChange() {
+      var engine = document.getElementById('engineSelect').value;
+      // Simpan pilihan engine segera supaya kiosk langsung ikut
+      saveAiEngine(engine);
+      updateEngineBadge();
+      showToast('Engine aktif: ' + (engine === 'fal' ? 'Fal.ai' : 'Google Gemini'), 'info');
+    }
+
+    function saveKeyOnly() {
+      var gKey = document.getElementById('geminiKeyInput').value.trim();
+      var fKey = document.getElementById('falKeyInput').value.trim();
+      var gModel = document.getElementById('geminiModelInput').value.trim() || 'gemini-3.1-flash-image';
+      var fModel = document.getElementById('falModelInput').value.trim() || 'fal-ai/flux-lora';
+
+      if (!gKey && !fKey) {
+        showToast('Mohon isi minimal salah satu API Key!', 'error');
         return;
       }
-      // Simulasi verifikasi (tidak ada backend); pola key vektor.
-      var looksValid = /^(r8_|gsk_|sk-|AIza)[A-Za-z0-9_\-]{10,}$/.test(key);
-      if (looksValid) {
-        status.textContent = 'Key valid ✓';
-        status.className = 'text-[11px] font-mono text-emerald-400';
-        showToast('API Key terverifikasi', 'success');
+
+      if (gKey) saveApiKey(gKey);
+      if (fKey) saveFalApiKey(fKey);
+      saveGeminiModel(gModel);
+      saveFalModel(fModel);
+      saveAiEngine(document.getElementById('engineSelect').value);
+
+      showToast('✓ Konfigurasi Engine, API Key & Model berhasil disimpan!');
+    }
+
+    async function verifyKeyOnly() {
+      var engine = document.getElementById('engineSelect').value;
+      var box = document.getElementById('statusBox');
+      var txt = document.getElementById('statusMsg');
+
+      var keyVal, modelVal, endpoint, payload, headers;
+
+      if (engine === 'fal') {
+        keyVal = document.getElementById('falKeyInput').value.trim();
+        modelVal = document.getElementById('falModelInput').value.trim() || 'fal-ai/flux-lora';
+        if (!keyVal) {
+          showToast('Isi Fal.ai API Key dulu!', 'error');
+          return;
+        }
+        endpoint = 'https://fal.run/' + modelVal;
+        headers = { 'Content-Type': 'application/json', 'Authorization': 'Key ' + keyVal };
+        payload = { prompt: 'a red apple on a white table' };
       } else {
-        status.textContent = 'Format key tidak dikenal';
-        status.className = 'text-[11px] font-mono text-amber-400';
-        showToast('Format key tidak dikenal', 'info');
+        keyVal = document.getElementById('geminiKeyInput').value.trim();
+        modelVal = document.getElementById('geminiModelInput').value.trim() || 'gemini-3.1-flash-image';
+        if (!keyVal) {
+          showToast('Isi Google Gemini API Key dulu!', 'error');
+          return;
+        }
+        endpoint = 'https://generativelanguage.googleapis.com/v1beta/models/' + modelVal + ':generateContent?key=' + encodeURIComponent(keyVal);
+        headers = { 'Content-Type': 'application/json' };
+        payload = {
+          contents: [{ parts: [
+            { text: "Reply with 'OK'" },
+            { inline_data: { mime_type: 'image/png', data: 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=' } }
+          ] }]
+        };
+      }
+
+      txt.innerText = 'Menguji engine [' + engine + '] model [' + modelVal + ']...';
+      txt.className = 'text-xs font-mono text-amber-400';
+      box.classList.remove('hidden');
+
+      try {
+        var response = await fetch(endpoint, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(payload)
+        });
+        var data = await response.json();
+        if (data.error) throw new Error(data.error.message || 'Gagal memanggil API');
+        if (data.detail) throw new Error(typeof data.detail === 'string' ? data.detail : JSON.stringify(data.detail));
+
+        txt.innerText = '✓ Engine ' + engine.toUpperCase() + ' — model ' + modelVal + ' Valid & Terkoneksi!';
+        txt.className = 'text-xs font-mono text-emerald-400';
+        showToast('✓ Verifikasi Sukses!');
+      } catch (err) {
+        txt.innerText = '✕ Error: ' + (err.message || 'Gagal memanggil API');
+        txt.className = 'text-xs font-mono text-rose-400';
       }
     }
-  </script>
+  async function loadGeminiModels() {
+  var key = document.getElementById('geminiKeyInput').value.trim() || getApiKey();
+  var sel = document.getElementById('geminiModelPreset');
+  if (!key) { showToast('Isi Gemini API Key dulu.', 'error'); return; }
+  sel.options.length = 0; sel.add(new Option('Memuat...', ''));
+  try {
+    var list = await GeminiAPI.listGeminiModels(key);
+    sel.options.length = 0; sel.add(new Option('Pilih dari ' + list.length + ' model:', ''));
+    list.forEach(function (m) { sel.add(new Option(m.label, m.id)); });
+    showToast(list.length + ' model gambar dimuat');
+  } catch (e) {
+    sel.options.length = 0; sel.add(new Option('Gagal: ' + (e.message || 'error'), ''));
+    showToast(e.message || 'Gagal memuat', 'error');
+  }
+}
+</script>
 </body>
 </html>
